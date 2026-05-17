@@ -26,6 +26,11 @@ export const Alert = ({ type = 'info', message, onClose }) => {
   );
 };
 
+export const FormError = ({ message }) => {
+  if (!message) return null;
+  return <p className="text-red-600 text-sm mt-1">{message}</p>;
+};
+
 export const EmptyState = ({ message = 'No hay datos disponibles' }) => (
   <div className="text-center py-12 text-gray-500">
     <p className="text-lg">{message}</p>

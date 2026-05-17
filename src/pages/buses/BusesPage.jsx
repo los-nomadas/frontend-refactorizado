@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { busService, driverService } from '../../api/services';
 import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
 import Button from '../../components/common/Button';
@@ -100,7 +101,12 @@ const BusesPage = () => {
                   <td className="px-6 py-4">{bus.totalSeats}</td>
                   <td className="px-6 py-4">{bus.driverFullName || 'N/A'}</td>
                   <td className="px-6 py-4 flex gap-2">
-                    <button className="text-blue-600 hover:text-blue-800">Editar</button>
+                    <Link
+                      to={`/buses/${bus.id}`}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      Ver
+                    </Link>
                     <button
                       onClick={() => handleDelete(bus.id)}
                       className="text-red-600 hover:text-red-800"

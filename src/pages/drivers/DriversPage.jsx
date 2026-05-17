@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { driverService } from '../../api/services';
 import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
 import Button from '../../components/common/Button';
@@ -124,7 +125,12 @@ const DriversPage = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 flex gap-2">
-                    <button className="text-blue-600 hover:text-blue-800">Editar</button>
+                    <Link
+                      to={`/drivers/${driver.id}`}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      Ver
+                    </Link>
                     <button
                       onClick={() => handleDelete(driver.id)}
                       className="text-red-600 hover:text-red-800"

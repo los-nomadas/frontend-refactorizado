@@ -4,6 +4,9 @@ import { userService } from '../../api/services';
 import { Loading, Alert } from '../../components/common/Feedback';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
+import FormField from '../../components/common/FormField';
+import { useForm } from '../../hooks/useForm';
+import { validateUserForm } from '../../utils/validation';
 
 const UserDetailPage = () => {
   const { id } = useParams();
@@ -12,7 +15,8 @@ const UserDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [formData, setFormData] = useState({
+
+  const [initialFormData, setInitialFormData] = useState({
     firstName: '',
     lastName: '',
     dni: '',
@@ -20,6 +24,21 @@ const UserDetailPage = () => {
     phone: '',
     birthDate: '',
   });
+
+  const handleSaveUser = async (formData) => {
+    try {
+      await userService.update(id, formData);
+      setUser(formData);
+      setIsEditOpen(false);
+      setError(null);
+      alert('Usuario actualizado correctamente');
+    } catch (err) {
+      setError('Error al actualizar usuario');
+      console.error(err);
+    }
+  };
+
+  const form = useForm(initialFormData, handleSaveUser, validateUserForm);
 
   useEffect(() => {
     loadUser();
@@ -30,31 +49,18 @@ const UserDetailPage = () => {
       setLoading(true);
       const response = await userService.getById(id);
       setUser(response.data);
-      setFormData(response.data);
+      setInitialFormData(response.data);
+      form.setField('firstName', response.data.firstName);
+      form.setField('lastName', response.data.lastName);
+      form.setField('dni', response.data.dni);
+      form.setField('email', response.data.email);
+      form.setField('phone', response.data.phone);
+      form.setField('birthDate', response.data.birthDate?.split('T')[0]);
     } catch (err) {
       setError('Error al cargar el usuario');
       console.error(err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    try {
-      await userService.update(id, formData);
-      setUser(formData);
-      setIsEditOpen(false);
-      setError(null);
-      alert('Usuario actualizado correctamente');
-    } catch (err) {
-      setError('Error al actualizar usuario');
-      console.error(err);
     }
   };
 
@@ -126,67 +132,68 @@ const UserDetailPage = () => {
         onClose={() => setIsEditOpen(false)}
         title="Editar Usuario"
       >
-        <form onSubmit={handleSave} className="space-y-4">
-          <input
-            type="text"
+        <form onSubmit={form.handleSubmit} className="space-y-4">
+          <FormField
+            label="Nombre"
             name="firstName"
-            placeholder="Nombre"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            value={form.formData.firstName}
+            onChange={form.handleChange}
+            error={form.errors.firstName}
             required
           />
-          <input
-            type="text"
+          <FormField
+            label="Apellidos"
             name="lastName"
-            placeholder="Apellidos"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            value={form.formData.lastName}
+            onChange={form.handleChange}
+            error={form.errors.lastName}
             required
           />
-          <input
-            type="text"
+          <FormField
+            label="DNI"
             name="dni"
-            placeholder="DNI"
-            value={formData.dni}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            value={form.formData.dni}
+            onChange={form.handleChange}
+            error={form.errors.dni}
             required
           />
-          <input
-            type="email"
+          <FormField
+            label="Email"
             name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            type="email"
+            value={form.formData.email}
+            onChange={form.handleChange}
+            error={form.errors.email}
             required
           />
-          <input
-            type="tel"
+          <FormField
+            label="Teléfono"
             name="phone"
-            placeholder="Teléfono"
-            value={formData.phone}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            type="tel"
+            value={form.formData.phone}
+            onChange={form.handleChange}
+            error={form.errors.phone}
           />
-          <input
-            type="date"
+          <FormField
+            label="Fecha Nacimiento"
             name="birthDate"
-            value={formData.birthDate?.split('T')[0] || ''}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            type="date"
+            value={form.formData.birthDate}
+            onChange={form.handleChange}
+            error={form.errors.birthDate}
             required
           />
           <div className="flex gap-2 pt-4">
-            <Button type="submit" variant="success">
-              Guardar
+            <Button type="submit" variant="success" disabled={form.isSubmitting}>
+              {form.isSubmitting ? 'Guardando...' : 'Guardar'}
             </Button>
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setIsEditOpen(false)}
+              onClick={() => {
+                setIsEditOpen(false);
+                form.resetForm();
+              }}
             >
               Cancelar
             </Button>
