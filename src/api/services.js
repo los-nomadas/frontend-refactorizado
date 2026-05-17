@@ -53,10 +53,3 @@ export const dashboardService = {
   getCurrentYearRevenue: () => apiClient.get('/dashboard/current-year-revenue'),
   getTopTrips: (year) => apiClient.get(`/dashboard/top-trips?year=${year}`),
 };
-
-export const authService = {
-  login: (credentials) => apiClient.post('/auth/login', credentials),
-  logout: () => {
-    localStorage.removeItem('authToken');
-  },
-};
