@@ -38,6 +38,11 @@ const DashboardPage = () => {
     }
   };
 
+  const formatAmount = (value) => {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(2) : '0.00';
+  };
+
   if (loading) return <Loading />;
 
   return (
@@ -77,7 +82,7 @@ const DashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-bold mb-4">Ingresos {selectedYear}</h2>
           <p className="text-4xl font-bold text-green-600">
-            €{(dashboard.currentYearRevenue?.totalRevenue || 0).toFixed(2)}
+            €{formatAmount(dashboard.currentYearRevenue?.totalRevenue)}
           </p>
           <p className="text-gray-600 mt-2">Ingresos totales del año</p>
         </div>
@@ -101,7 +106,7 @@ const DashboardPage = () => {
                   <p className="text-gray-600 text-sm">ID: {trip.tripId}</p>
                 </div>
                 <p className="text-2xl font-bold text-green-600">
-                  €{trip.revenue.toFixed(2)}
+                  €{formatAmount(trip.revenue)}
                 </p>
               </div>
             ))}
