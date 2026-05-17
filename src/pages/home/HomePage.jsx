@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { tripService } from '../api/services';
-import { Loading, EmptyState, Alert } from '../components/common/Feedback';
+import { tripService } from '../../api/services';
+import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
 
 const HomePage = () => {
   const [trips, setTrips] = useState([]);
@@ -15,7 +15,7 @@ const HomePage = () => {
   const loadTrips = async () => {
     try {
       setLoading(true);
-      const response = await tripService.getAll();
+      const response = await tripService.getOffers();
       setTrips(response.data || []);
     } catch (err) {
       setError('Error al cargar los viajes');
@@ -24,6 +24,9 @@ const HomePage = () => {
       setLoading(false);
     }
   };
+
+  const boardLabel = (boardType) =>
+    boardType === 'FULL_BOARD' ? 'Pensión completa' : 'Media pensión';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -53,7 +56,7 @@ const HomePage = () => {
           <EmptyState message="No hay viajes disponibles en este momento" />
         ) : (
           <div>
-            <h2 className="text-2xl font-bold mb-6">Viajes Destacados</h2>
+            <h2 className="text-2xl font-bold mb-6">Viajes en oferta</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {trips.slice(0, 6).map((trip) => (
                 <div
@@ -68,9 +71,7 @@ const HomePage = () => {
                     />
                   )}
                   <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2">
-                      {trip.destination}
-                    </h3>
+                    <h3 className="text-xl font-bold mb-2">{trip.destination}</h3>
                     <p className="text-gray-600 mb-4">{trip.description}</p>
                     <div className="mb-4 space-y-1 text-sm text-gray-600">
                       <p>
@@ -81,20 +82,27 @@ const HomePage = () => {
                         <span className="font-semibold">Regreso:</span>{' '}
                         {new Date(trip.returnDate).toLocaleDateString()}
                       </p>
+                      <p>
+                        <span className="font-semibold">Régimen:</span>{' '}
+                        {boardLabel(trip.boardType)}
+                      </p>
                     </div>
-                    <div className="flex gap-2 mb-4">
+                    <div className="flex flex-wrap gap-2 mb-4">
                       <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded text-sm">
-                        Media Pensión: €{trip.priceAdult}
+                        Adulto €{trip.priceAdult}
+                      </span>
+                      <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded text-sm">
+                        Niño €{trip.priceChild}
                       </span>
                       <span className="bg-green-100 text-green-800 px-3 py-1 rounded text-sm">
-                        Pensión Completa: €{trip.priceAdult}
+                        Senior €{trip.priceSenior}
                       </span>
                     </div>
                     <Link
                       to={`/trips/${trip.id}`}
                       className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold"
                     >
-                      Ver Detalles
+                      Ver detalles
                     </Link>
                   </div>
                 </div>

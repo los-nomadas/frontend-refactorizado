@@ -34,6 +34,7 @@ export const driverService = {
 
 export const tripService = {
   getAll: () => apiClient.get('/trips'),
+  getOffers: () => apiClient.get('/trips/offers'),
   getById: (id) => apiClient.get(`/trips/${id}`),
   create: (trip) => apiClient.post('/trips', trip),
   update: (id, trip) => apiClient.put(`/trips/${id}`, trip),
