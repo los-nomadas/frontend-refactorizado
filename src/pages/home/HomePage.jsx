@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { tripService } from '../../api/services';
-import { Alert, EmptyState, Loading } from '../../components/common/Feedback';
+import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
 
 const HomePage = () => {
   const [trips, setTrips] = useState([]);
@@ -15,7 +15,7 @@ const HomePage = () => {
   const loadTrips = async () => {
     try {
       setLoading(true);
-      const response = await tripService.getAll();
+      const response = await tripService.getOffers();
       setTrips(response.data || []);
     } catch (err) {
       setError('Error al cargar los viajes');
@@ -25,56 +25,90 @@ const HomePage = () => {
     }
   };
 
+  const boardLabel = (boardType) =>
+    boardType === 'FULL_BOARD' ? 'Pensión completa' : 'Media pensión';
+
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="container mx-auto px-4 py-10">
-        <section className="mb-10">
-          <h1 className="mb-3 text-4xl font-bold text-slate-950">Agencia de Viajes</h1>
-          <p className="mb-6 max-w-3xl text-lg text-slate-600">
-            Gestiona ofertas, reservas, hoteles, autobuses y conductores desde un unico panel.
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Bienvenido a Nomadas
+          </h1>
+          <p className="text-xl text-gray-600 mb-8">
+            Descubre nuestros viajes más emocionantes
           </p>
           <Link
             to="/trips"
-            className="inline-flex rounded bg-sky-700 px-5 py-3 font-semibold text-white hover:bg-sky-800"
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold"
           >
-            Ver viajes
+            Ver Todos los Viajes
           </Link>
-        </section>
+        </div>
 
-        {error && <Alert type="error" message={error} onClose={() => setError(null)} />}
+        {error && (
+          <Alert type="error" message={error} onClose={() => setError(null)} />
+        )}
 
         {loading ? (
           <Loading />
         ) : trips.length === 0 ? (
           <EmptyState message="No hay viajes disponibles en este momento" />
         ) : (
-          <section>
-            <h2 className="mb-5 text-2xl font-bold text-slate-900">Viajes destacados</h2>
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div>
+            <h2 className="text-2xl font-bold mb-6">Viajes en oferta</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {trips.slice(0, 6).map((trip) => (
-                <article key={trip.id} className="overflow-hidden rounded bg-white shadow">
+                <div
+                  key={trip.id}
+                  className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
+                >
                   {trip.imageUrl && (
-                    <img src={trip.imageUrl} alt={trip.destination} className="h-48 w-full object-cover" />
+                    <img
+                      src={trip.imageUrl}
+                      alt={trip.destination}
+                      className="w-full h-48 object-cover"
+                    />
                   )}
-                  <div className="p-5">
-                    <h3 className="mb-2 text-xl font-bold text-slate-950">{trip.destination}</h3>
-                    <p className="mb-4 text-slate-600">{trip.description}</p>
-                    <dl className="mb-4 space-y-1 text-sm text-slate-600">
-                      <div><dt className="inline font-semibold">Salida:</dt> <dd className="inline">{new Date(trip.departureDate).toLocaleDateString()}</dd></div>
-                      <div><dt className="inline font-semibold">Regreso:</dt> <dd className="inline">{new Date(trip.returnDate).toLocaleDateString()}</dd></div>
-                      <div><dt className="inline font-semibold">Adulto:</dt> <dd className="inline">EUR {trip.priceAdult}</dd></div>
-                    </dl>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-2">{trip.destination}</h3>
+                    <p className="text-gray-600 mb-4">{trip.description}</p>
+                    <div className="mb-4 space-y-1 text-sm text-gray-600">
+                      <p>
+                        <span className="font-semibold">Salida:</span>{' '}
+                        {new Date(trip.departureDate).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Regreso:</span>{' '}
+                        {new Date(trip.returnDate).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Régimen:</span>{' '}
+                        {boardLabel(trip.boardType)}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded text-sm">
+                        Adulto €{trip.priceAdult}
+                      </span>
+                      <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded text-sm">
+                        Niño €{trip.priceChild}
+                      </span>
+                      <span className="bg-green-100 text-green-800 px-3 py-1 rounded text-sm">
+                        Senior €{trip.priceSenior}
+                      </span>
+                    </div>
                     <Link
                       to={`/trips/${trip.id}`}
-                      className="block rounded bg-sky-700 py-2 text-center font-semibold text-white hover:bg-sky-800"
+                      className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold"
                     >
                       Ver detalles
                     </Link>
                   </div>
-                </article>
+                </div>
               ))}
             </div>
-          </section>
+          </div>
         )}
       </div>
     </div>

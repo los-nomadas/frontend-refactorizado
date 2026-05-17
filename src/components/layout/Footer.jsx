@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
-            <h3 className="text-lg font-bold mb-4">La Última Puerta</h3>
+            <h3 className="text-lg font-bold mb-4">Nomadas</h3>
             <p className="text-gray-400">
               La mejor agencia de viajes para experiencias inolvidables.
             </p>
@@ -21,12 +21,12 @@ const Footer = () => {
           </div>
           <div>
             <h3 className="text-lg font-bold mb-4">Contacto</h3>
-            <p className="text-gray-400">Email: info@ultimapuerta.com</p>
+            <p className="text-gray-400">Email: info@nomadas.com</p>
             <p className="text-gray-400">Teléfono: +34 123 456 789</p>
           </div>
         </div>
         <div className="border-t border-gray-700 pt-8 text-center text-gray-400">
-          <p>&copy; 2026 La Última Puerta. Todos los derechos reservados.</p>
+          <p>&copy; 2026 Nomadas. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>
