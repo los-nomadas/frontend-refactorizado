@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { tripService, bookingService } from '../../api/services';
+import { tripService, bookingService, userService } from '../../api/services';
 import { Loading, Alert } from '../../components/common/Feedback';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 
+const emptyCompanion = () => ({ firstName: '', lastName: '', birthDate: '' });
+
 const TripDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const tripId = Number(id);
+
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [users, setUsers] = useState([]);
   const [bookingData, setBookingData] = useState({
+    userId: '',
     boardType: 'HALF_BOARD',
     groupType: 'NONE',
-    companions: [],
+    companions: [emptyCompanion()],
   });
 
   useEffect(() => {
@@ -25,7 +31,7 @@ const TripDetailPage = () => {
   const loadTrip = async () => {
     try {
       setLoading(true);
-      const response = await tripService.getById(id);
+      const response = await tripService.getById(tripId);
       setTrip(response.data);
     } catch (err) {
       setError('Error al cargar el viaje');
@@ -35,16 +41,61 @@ const TripDetailPage = () => {
     }
   };
 
+  const openBooking = async () => {
+    try {
+      const response = await userService.getAll();
+      setUsers(response.data || []);
+      setIsBookingOpen(true);
+    } catch (err) {
+      setError('No se pudo cargar el listado de clientes');
+      console.error(err);
+    }
+  };
+
+  const updateCompanion = (index, field, value) => {
+    setBookingData((prev) => {
+      const companions = prev.companions.map((c, i) =>
+        i === index ? { ...c, [field]: value } : c
+      );
+      return { ...prev, companions };
+    });
+  };
+
+  const addCompanion = () => {
+    setBookingData((prev) => ({
+      ...prev,
+      companions: [...prev.companions, emptyCompanion()],
+    }));
+  };
+
+  const removeCompanion = (index) => {
+    setBookingData((prev) => ({
+      ...prev,
+      companions: prev.companions.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleBooking = async (e) => {
     e.preventDefault();
+    if (!bookingData.userId) {
+      setError('Selecciona el cliente que realiza la reserva');
+      return;
+    }
+    if (bookingData.companions.length === 0) {
+      setError('Añade al menos un viajero');
+      return;
+    }
     try {
       await bookingService.create({
-        tripId: id,
-        ...bookingData,
+        userId: Number(bookingData.userId),
+        tripId,
+        boardType: bookingData.boardType,
+        groupType: bookingData.groupType,
+        companions: bookingData.companions,
       });
       setIsBookingOpen(false);
       setError(null);
-      alert('¡Reserva realizada con éxito! Revisa tu email.');
+      alert('¡Reserva realizada con éxito! El cliente recibirá un email.');
       navigate('/bookings');
     } catch (err) {
       setError(err.response?.data?.message || 'Error al realizar la reserva');
@@ -90,7 +141,7 @@ const TripDetailPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <div className="border rounded-lg p-6">
-              <h2 className="text-2xl font-bold mb-4">Detalles del Viaje</h2>
+              <h2 className="text-2xl font-bold mb-4">Detalles del viaje</h2>
               <div className="space-y-3 text-gray-700">
                 <p>
                   <span className="font-semibold">Salida:</span>{' '}
@@ -111,13 +162,16 @@ const TripDetailPage = () => {
                   })}
                 </p>
                 <p>
-                  <span className="font-semibold">Autobús:</span> {trip.busId ? 'Asignado' : 'Pendiente'}
+                  <span className="font-semibold">Hotel:</span> {trip.hotelName}
                 </p>
                 <p>
-                  <span className="font-semibold">Hotel:</span> {trip.hotelId ? 'Asignado' : 'Pendiente'}
+                  <span className="font-semibold">Autobús:</span> {trip.busPlateNumber}
                 </p>
                 <p>
-                  <span className="font-semibold">Plazas Disponibles:</span>{' '}
+                  <span className="font-semibold">Régimen:</span> {trip.boardType === 'FULL_BOARD' ? 'Pensión completa' : 'Media pensión'}
+                </p>
+                <p>
+                  <span className="font-semibold">Plazas disponibles:</span>{' '}
                   <span
                     className={`font-bold ${
                       trip.availableSeats > 0 ? 'text-green-600' : 'text-red-600'
@@ -130,18 +184,22 @@ const TripDetailPage = () => {
             </div>
 
             <div className="border rounded-lg p-6">
-              <h2 className="text-2xl font-bold mb-4">Tarifas</h2>
-              <div className="space-y-4">
+              <h2 className="text-2xl font-bold mb-4">Tarifas por persona</h2>
+              <div className="space-y-3">
                 <div className="bg-blue-50 p-4 rounded">
-                  <p className="text-sm text-gray-600">Media Pensión</p>
+                  <p className="text-sm text-gray-600">Adulto (18 - 64)</p>
                   <p className="text-3xl font-bold text-blue-600">€{trip.priceAdult}</p>
                 </div>
-                <div className="bg-green-50 p-4 rounded">
-                  <p className="text-sm text-gray-600">Pensión Completa</p>
-                  <p className="text-3xl font-bold text-green-600">€{trip.priceAdult + 50}</p>
+                <div className="bg-yellow-50 p-4 rounded">
+                  <p className="text-sm text-gray-600">Niño (menor de 18)</p>
+                  <p className="text-3xl font-bold text-yellow-700">€{trip.priceChild}</p>
                 </div>
-                <p className="text-xs text-gray-500 mt-4">
-                  *Tarifas por persona adulta. Se aplicarán tarifas diferentes para niños (menores de 18) y pensionistas (mayores de 65).
+                <div className="bg-green-50 p-4 rounded">
+                  <p className="text-sm text-gray-600">Pensionista (65+)</p>
+                  <p className="text-3xl font-bold text-green-700">€{trip.priceSenior}</p>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Las reservas IMSERSO aplican 20% de descuento y las escolares 15%, calculados en el backend.
                 </p>
               </div>
             </div>
@@ -150,11 +208,11 @@ const TripDetailPage = () => {
           <div className="flex gap-4">
             {trip.availableSeats > 0 ? (
               <Button
-                onClick={() => setIsBookingOpen(true)}
+                onClick={openBooking}
                 variant="success"
                 className="text-lg px-8 py-3"
               >
-                Reservar Ahora
+                Reservar ahora
               </Button>
             ) : (
               <div className="bg-red-100 text-red-800 px-6 py-3 rounded-lg font-semibold">
@@ -168,50 +226,107 @@ const TripDetailPage = () => {
       <Modal
         isOpen={isBookingOpen}
         onClose={() => setIsBookingOpen(false)}
-        title="Realizar Reserva"
+        title="Realizar reserva"
       >
         <form onSubmit={handleBooking} className="space-y-4">
           <div>
-            <label className="block font-semibold mb-2">Tipo de Pensión</label>
+            <label className="block font-semibold mb-2">Cliente</label>
             <select
-              value={bookingData.boardType}
-              onChange={(e) =>
-                setBookingData({ ...bookingData, boardType: e.target.value })
-              }
+              value={bookingData.userId}
+              onChange={(e) => setBookingData({ ...bookingData, userId: e.target.value })}
               className="w-full px-4 py-2 border rounded"
+              required
             >
-              <option value="HALF_BOARD">Media Pensión</option>
-              <option value="FULL_BOARD">Pensión Completa</option>
+              <option value="">Selecciona un cliente</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.firstName} {user.lastName} ({user.email})
+                </option>
+              ))}
             </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block font-semibold mb-2">Régimen</label>
+              <select
+                value={bookingData.boardType}
+                onChange={(e) =>
+                  setBookingData({ ...bookingData, boardType: e.target.value })
+                }
+                className="w-full px-4 py-2 border rounded"
+              >
+                <option value="HALF_BOARD">Media pensión</option>
+                <option value="FULL_BOARD">Pensión completa</option>
+              </select>
+            </div>
+            <div>
+              <label className="block font-semibold mb-2">Tipo de grupo</label>
+              <select
+                value={bookingData.groupType}
+                onChange={(e) =>
+                  setBookingData({ ...bookingData, groupType: e.target.value })
+                }
+                className="w-full px-4 py-2 border rounded"
+              >
+                <option value="NONE">Individual</option>
+                <option value="IMSERSO">IMSERSO (-20%)</option>
+                <option value="SCHOOL">Escolar (-15%)</option>
+              </select>
+            </div>
           </div>
 
           <div>
-            <label className="block font-semibold mb-2">Tipo de Grupo</label>
-            <select
-              value={bookingData.groupType}
-              onChange={(e) =>
-                setBookingData({ ...bookingData, groupType: e.target.value })
-              }
-              className="w-full px-4 py-2 border rounded"
-            >
-              <option value="NONE">Individual</option>
-              <option value="IMSERSO">IMSERSO</option>
-              <option value="SCHOOL">Grupo Escolar</option>
-            </select>
-          </div>
-
-          <div className="bg-blue-50 p-4 rounded text-sm text-gray-700">
-            <p className="font-semibold mb-2">Requisitos:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Menores deben ir acompañados de adultos</li>
-              <li>Proporciona nombres y fechas de nacimiento de acompañantes</li>
-              <li>Recibirás confirmación por email</li>
-            </ul>
+            <div className="flex justify-between items-center mb-2">
+              <label className="block font-semibold">Viajeros</label>
+              <Button type="button" variant="secondary" onClick={addCompanion}>
+                + Añadir viajero
+              </Button>
+            </div>
+            <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
+              {bookingData.companions.map((companion, index) => (
+                <div key={index} className="grid grid-cols-12 gap-2 items-end border rounded p-2">
+                  <input
+                    className="col-span-4 px-2 py-1 border rounded"
+                    placeholder="Nombre"
+                    value={companion.firstName}
+                    onChange={(e) => updateCompanion(index, 'firstName', e.target.value)}
+                    required
+                  />
+                  <input
+                    className="col-span-4 px-2 py-1 border rounded"
+                    placeholder="Apellidos"
+                    value={companion.lastName}
+                    onChange={(e) => updateCompanion(index, 'lastName', e.target.value)}
+                    required
+                  />
+                  <input
+                    type="date"
+                    className="col-span-3 px-2 py-1 border rounded"
+                    value={companion.birthDate}
+                    onChange={(e) => updateCompanion(index, 'birthDate', e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="col-span-1 text-red-600 font-bold"
+                    onClick={() => removeCompanion(index)}
+                    disabled={bookingData.companions.length === 1}
+                    title="Eliminar viajero"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Un menor de 18 años no puede viajar sin al menos un adulto.
+            </p>
           </div>
 
           <div className="flex gap-2 pt-4">
             <Button type="submit" variant="success">
-              Confirmar Reserva
+              Confirmar reserva
             </Button>
             <Button
               type="button"
