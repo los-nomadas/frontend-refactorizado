@@ -9,7 +9,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold">
-            🎢 La Última Puerta
+            Nomadas
           </Link>
           <nav className="flex items-center gap-6">
             <Link to="/" className="hover:text-blue-200">

@@ -30,7 +30,7 @@ const HomePage = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Bienvenido a La Última Puerta
+            Bienvenido a Nomadas
           </h1>
           <p className="text-xl text-gray-600 mb-8">
             Descubre nuestros viajes más emocionantes
