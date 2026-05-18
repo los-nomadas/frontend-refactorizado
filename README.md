@@ -8,15 +8,11 @@
 
 ---
 
-# 🇪🇸 Español
+# Español
 
-## 📌 Descripción
+## 📌 **frontend- LOS NOMADAS**
 
-**frontend-amusement-park** es una aplicación frontend desarrollada para la agencia de viajes **Nómadas**.
-
-El proyecto está construido con **React 19**, **Vite 8** y **TailwindCSS 4**, proporcionando una interfaz moderna, rápida y escalable para la gestión de viajes, reservas, hoteles, autobuses, conductores y usuarios.
-
-La aplicación consume una API REST mediante **Axios**, utilizando autenticación basada en **JWT** y rutas protegidas.
+### Es una aplicación frontend desarrollada para la agencia de viajes ** Los Nómadas**. El proyecto está construido con **React 19**, **Vite 8** y **TailwindCSS 4**, proporcionando una interfaz moderna, rápida y escalable para la gestión de viajes, reservas, hoteles, autobuses, conductores y usuarios. La aplicación consume una API REST mediante **Axios**, utilizando autenticación basada en **JWT** y rutas protegidas.
 
 ---
 
@@ -275,9 +271,7 @@ La aplicación implementa autenticación basada en **JSON Web Tokens (JWT)** med
 
 # 🌍 English
 
-## 📌 Description
-
-**frontend-amusement-park** is a frontend application developed for the **Nómadas** travel agency.
+### frontend-LOS NOMADAS is a frontend application developed for the **Nómadas** travel agency.
 
 The project is built using **React 19**, **Vite 8**, and **TailwindCSS 4**, providing a modern, fast, and scalable interface for managing trips, bookings, hotels, buses, drivers, and users.
 
