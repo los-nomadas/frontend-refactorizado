@@ -15,8 +15,21 @@ import BusDetailPage from './pages/buses/BusDetailPage';
 import DriversPage from './pages/drivers/DriversPage';
 import DriverDetailPage from './pages/drivers/DriverDetailPage';
 import BookingsPage from './pages/bookings/BookingsPage';
+import BusDetailPage from './pages/buses/BusDetailPage';
+import BusesPage from './pages/buses/BusesPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
-import './App.css';
+import DriverDetailPage from './pages/drivers/DriverDetailPage';
+import DriversPage from './pages/drivers/DriversPage';
+import HomePage from './pages/home/HomePage';
+import HotelDetailPage from './pages/hotels/HotelDetailPage';
+import HotelsPage from './pages/hotels/HotelsPage';
+import LoginPage from './pages/login/LoginPage';
+import MyBookingsPage from './pages/bookings/MyBookingsPage';
+import ProfilePage from './pages/profile/ProfilePage';
+import TripDetailPage from './pages/trips/TripDetailPage';
+import TripsPage from './pages/trips/TripsPage';
+import UserDetailPage from './pages/users/UserDetailPage';
+import UsersPage from './pages/users/UsersPage';
 
 function App() {
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { hotelService } from '../../api/services';
 import { Loading, Alert } from '../../components/common/Feedback';
@@ -14,10 +14,6 @@ const HotelDetailPage = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [formData, setFormData] = useState({});
 
-  useEffect(() => {
-    loadHotel();
-  }, [id]);
-
   const loadHotel = async () => {
     try {
       setLoading(true);
@@ -31,6 +27,10 @@ const HotelDetailPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadHotel();
+  }, [id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { userService } from '../../api/services';
 import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
@@ -19,10 +19,6 @@ const UsersPage = () => {
     birthDate: '',
   });
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
-
   const loadUsers = async () => {
     try {
       setLoading(true);
@@ -35,6 +31,10 @@ const UsersPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

@@ -34,7 +34,7 @@ export const driverService = {
 
 export const tripService = {
   getAll: () => apiClient.get('/trips'),
-  getOffers: () => apiClient.get('/trips/offers'),
+  getOffers: () => apiClient.get('/trips'),
   getById: (id) => apiClient.get(`/trips/${id}`),
   create: (trip) => apiClient.post('/trips', trip),
   update: (id, trip) => apiClient.put(`/trips/${id}`, trip),
@@ -43,6 +43,7 @@ export const tripService = {
 
 export const bookingService = {
   getAll: () => apiClient.get('/bookings'),
+  getMy: () => apiClient.get('/bookings/my'),
   getById: (id) => apiClient.get(`/bookings/${id}`),
   create: (booking) => apiClient.post('/bookings', booking),
   update: (id, booking) => apiClient.put(`/bookings/${id}`, booking),
@@ -53,6 +54,13 @@ export const dashboardService = {
   getTripsByYear: (year) => apiClient.get(`/dashboard/trips-by-year?year=${year}`),
   getCurrentYearRevenue: () => apiClient.get('/dashboard/current-year-revenue'),
   getTopTrips: (year) => apiClient.get(`/dashboard/top-trips?year=${year}`),
+  getTotalUsers: () => userService.getAll(),
+  getTotalTrips: () => tripService.getAll(),
+  getTotalBookings: () => bookingService.getAll(),
+  getRecentBookings: (limit = 5) => bookingService.getAll().then((res) => ({
+    ...res,
+    data: res.data.slice(0, limit),
+  })),
 };
 
 export const authService = {

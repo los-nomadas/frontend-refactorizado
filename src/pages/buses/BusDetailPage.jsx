@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { busService, driverService } from '../../api/services';
 import { Loading, Alert } from '../../components/common/Feedback';
@@ -14,11 +14,6 @@ const BusDetailPage = () => {
   const [error, setError] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [formData, setFormData] = useState({});
-
-  useEffect(() => {
-    loadBus();
-    loadDrivers();
-  }, [id]);
 
   const loadBus = async () => {
     try {
@@ -42,6 +37,11 @@ const BusDetailPage = () => {
       console.error('Error al cargar conductores:', err);
     }
   };
+
+  useEffect(() => {
+    loadBus();
+    loadDrivers();
+  }, [id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

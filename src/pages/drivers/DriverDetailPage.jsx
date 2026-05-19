@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { driverService } from '../../api/services';
 import { Loading, Alert } from '../../components/common/Feedback';
@@ -14,10 +14,6 @@ const DriverDetailPage = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [formData, setFormData] = useState({});
 
-  useEffect(() => {
-    loadDriver();
-  }, [id]);
-
   const loadDriver = async () => {
     try {
       setLoading(true);
@@ -31,6 +27,10 @@ const DriverDetailPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadDriver();
+  }, [id]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;

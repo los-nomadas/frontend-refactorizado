@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { driverService } from '../../api/services';
 import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
@@ -20,10 +20,6 @@ const DriversPage = () => {
     available: true,
   });
 
-  useEffect(() => {
-    loadDrivers();
-  }, []);
-
   const loadDrivers = async () => {
     try {
       setLoading(true);
@@ -36,6 +32,10 @@ const DriversPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadDrivers();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;

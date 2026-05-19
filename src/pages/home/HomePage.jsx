@@ -1,118 +1,186 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+
+import MainLayout from '../../components/layout/MainLayout';
 import { tripService } from '../../api/services';
-import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
 
-const HomePage = () => {
-  const [trips, setTrips] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+function HomePage() {
+  const [featuredTrips, setFeaturedTrips] = useState([]);
 
-  useEffect(() => {
-    loadTrips();
-  }, []);
-
-  const loadTrips = async () => {
+  const loadFeaturedTrips = async () => {
     try {
-      setLoading(true);
-      const response = await tripService.getOffers();
-      setTrips(response.data || []);
-    } catch (err) {
-      setError('Error al cargar los viajes');
-      console.error(err);
-    } finally {
-      setLoading(false);
+      const response = await tripService.getAll();
+      setFeaturedTrips((response.data || []).slice(0, 3));
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const boardLabel = (boardType) =>
-    boardType === 'FULL_BOARD' ? 'Pensión completa' : 'Media pensión';
+  useEffect(() => {
+    loadFeaturedTrips();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Bienvenido a Nomadas
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Descubre nuestros viajes más emocionantes
-          </p>
-          <Link
-            to="/trips"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold"
+    <MainLayout>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '60px',
+        }}
+      >
+        <section
+          style={{
+            background: 'linear-gradient(135deg, #2563eb, #1e3a8a)',
+            padding: '80px 40px',
+            borderRadius: '24px',
+            textAlign: 'center',
+          }}
+        >
+          <h1
+            style={{
+              fontSize: '64px',
+              marginBottom: '20px',
+            }}
           >
-            Ver Todos los Viajes
-          </Link>
-        </div>
+            Descubre el mundo
+          </h1>
 
-        {error && (
-          <Alert type="error" message={error} onClose={() => setError(null)} />
-        )}
+          <p
+            style={{
+              fontSize: '22px',
+              maxWidth: '700px',
+              margin: '0 auto',
+              color: '#dbeafe',
+            }}
+          >
+            Reserva experiencias únicas, viajes inolvidables y destinos premium
+            con Nomadas.
+          </p>
+        </section>
 
-        {loading ? (
-          <Loading />
-        ) : trips.length === 0 ? (
-          <EmptyState message="No hay viajes disponibles en este momento" />
-        ) : (
-          <div>
-            <h2 className="text-2xl font-bold mb-6">Viajes en oferta</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {trips.slice(0, 6).map((trip) => (
+        <section>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '30px',
+            }}
+          >
+            <h2
+              style={{
+                fontSize: '36px',
+              }}
+            >
+              Viajes destacados
+            </h2>
+
+            <Link
+              to="/trips"
+              style={{
+                color: '#60a5fa',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+              }}
+            >
+              Ver todos
+            </Link>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '25px',
+            }}
+          >
+            {featuredTrips.length === 0 && (
+              <div
+                style={{
+                  color: '#9ca3af',
+                  fontSize: '20px',
+                  marginTop: '20px',
+                }}
+              >
+                No hay viajes disponibles todavía.
+              </div>
+            )}
+
+            {featuredTrips.map((trip) => (
+              <div
+                key={trip.id}
+                style={{
+                  backgroundColor: '#111827',
+                  borderRadius: '18px',
+                  overflow: 'hidden',
+                }}
+              >
+                <img
+                  src={trip.imageUrl || 'https://picsum.photos/600/400'}
+                  alt={trip.destination}
+                  style={{
+                    width: '100%',
+                    height: '220px',
+                    objectFit: 'cover',
+                  }}
+                />
+
                 <div
-                  key={trip.id}
-                  className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
+                  style={{
+                    padding: '20px',
+                  }}
                 >
-                  {trip.imageUrl && (
-                    <img
-                      src={trip.imageUrl}
-                      alt={trip.destination}
-                      className="w-full h-48 object-cover"
-                    />
-                  )}
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2">{trip.destination}</h3>
-                    <p className="text-gray-600 mb-4">{trip.description}</p>
-                    <div className="mb-4 space-y-1 text-sm text-gray-600">
-                      <p>
-                        <span className="font-semibold">Salida:</span>{' '}
-                        {new Date(trip.departureDate).toLocaleDateString()}
-                      </p>
-                      <p>
-                        <span className="font-semibold">Regreso:</span>{' '}
-                        {new Date(trip.returnDate).toLocaleDateString()}
-                      </p>
-                      <p>
-                        <span className="font-semibold">Régimen:</span>{' '}
-                        {boardLabel(trip.boardType)}
-                      </p>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded text-sm">
-                        Adulto €{trip.priceAdult}
-                      </span>
-                      <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded text-sm">
-                        Niño €{trip.priceChild}
-                      </span>
-                      <span className="bg-green-100 text-green-800 px-3 py-1 rounded text-sm">
-                        Senior €{trip.priceSenior}
-                      </span>
-                    </div>
+                  <h3
+                    style={{
+                      fontSize: '28px',
+                      marginBottom: '10px',
+                    }}
+                  >
+                    {trip.destination}
+                  </h3>
+
+                  <p>{trip.hotelName}</p>
+
+                  <div
+                    style={{
+                      marginTop: '20px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '28px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      €{trip.priceAdult}
+                    </span>
+
                     <Link
                       to={`/trips/${trip.id}`}
-                      className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold"
+                      style={{
+                        backgroundColor: '#2563eb',
+                        color: 'white',
+                        padding: '10px 18px',
+                        borderRadius: '10px',
+                        textDecoration: 'none',
+                        fontWeight: 'bold',
+                      }}
                     >
-                      Ver detalles
+                      Ver viaje
                     </Link>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
+        </section>
       </div>
-    </div>
+    </MainLayout>
   );
-};
+}
 
 export default HomePage;

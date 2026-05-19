@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { bookingService } from '../../api/services';
 import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
@@ -8,10 +8,6 @@ const BookingsPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    loadBookings();
-  }, []);
 
   const loadBookings = async () => {
     try {
@@ -25,6 +21,10 @@ const BookingsPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadBookings();
+  }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm('¿Cancelar esta reserva? Se liberarán las plazas.')) {

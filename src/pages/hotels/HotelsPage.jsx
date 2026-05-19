@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { hotelService } from '../../api/services';
 import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
@@ -20,10 +20,6 @@ const HotelsPage = () => {
     fullBoardPrice: '',
   });
 
-  useEffect(() => {
-    loadHotels();
-  }, []);
-
   const loadHotels = async () => {
     try {
       setLoading(true);
@@ -36,6 +32,10 @@ const HotelsPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadHotels();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

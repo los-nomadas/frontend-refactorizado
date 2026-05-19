@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { userService } from '../../api/services';
 import { Loading, Alert } from '../../components/common/Feedback';
@@ -40,10 +40,6 @@ const UserDetailPage = () => {
 
   const form = useForm(initialFormData, handleSaveUser, validateUserForm);
 
-  useEffect(() => {
-    loadUser();
-  }, [id]);
-
   const loadUser = async () => {
     try {
       setLoading(true);
@@ -63,6 +59,10 @@ const UserDetailPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadUser();
+  }, [id]);
 
   if (loading) return <Loading />;
 

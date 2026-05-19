@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { busService, driverService } from '../../api/services';
 import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
@@ -17,10 +17,6 @@ const BusesPage = () => {
     driverId: '',
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = async () => {
     try {
       setLoading(true);
@@ -37,6 +33,10 @@ const BusesPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
