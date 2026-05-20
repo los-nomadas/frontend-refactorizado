@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { dashboardService } from '../../api/services';
 import { Loading, Alert } from '../../components/common/Feedback';
 import StatCard from '../../components/dashboard/StatCard';
@@ -79,7 +80,6 @@ const DashboardPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between flex-wrap gap-4">
@@ -115,16 +115,13 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Alert */}
       {error && (
         <div className="container mx-auto px-4 mt-6">
           <Alert type="error" message={error} onClose={() => setError(null)} />
         </div>
       )}
 
-      {/* Content */}
       <div className="container mx-auto px-4 py-8">
-        {/* KPI Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             title="Total Usuarios"
@@ -215,20 +212,13 @@ const DashboardPage = () => {
           />
         </div>
 
-        {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Left Column - Charts and Tables */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Top Trips */}
             <OccupancyChart topTrips={dashboard.topTrips} />
-
-            {/* Recent Bookings */}
             <RecentBookings bookings={dashboard.recentBookings} />
           </div>
 
-          {/* Right Column - Summary Stats */}
           <div className="space-y-6">
-            {/* Summary Card */}
             <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-semibold mb-4">Resumen Rápido</h3>
               <div className="space-y-4">
@@ -267,28 +257,27 @@ const DashboardPage = () => {
               </div>
             </div>
 
-            {/* Quick Actions */}
             <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-semibold mb-4">Acciones Rápidas</h3>
               <div className="space-y-2">
-                <a
-                  href="/trips"
+                <Link
+                  to="/trips"
                   className="block w-full text-center px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium transition-colors"
                 >
                   Ver Todos los Viajes
-                </a>
-                <a
-                  href="/bookings"
+                </Link>
+                <Link
+                  to="/bookings"
                   className="block w-full text-center px-4 py-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 font-medium transition-colors"
                 >
                   Ver Todas las Reservas
-                </a>
-                <a
-                  href="/users"
+                </Link>
+                <Link
+                  to="/users"
                   className="block w-full text-center px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 font-medium transition-colors"
                 >
                   Ver Todos los Usuarios
-                </a>
+                </Link>
               </div>
             </div>
           </div>

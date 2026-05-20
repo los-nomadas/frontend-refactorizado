@@ -1,9 +1,4 @@
-import Header from './Header';
-
-import Footer from './Footer';
-
 function MainLayout({ children }) {
-
   return (
     <div
       style={{
@@ -12,9 +7,6 @@ function MainLayout({ children }) {
         color: 'white',
       }}
     >
-
-      <Header />
-
       <main
         style={{
           padding: '40px',
@@ -22,9 +14,6 @@ function MainLayout({ children }) {
       >
         {children}
       </main>
-
-      <Footer />
-
     </div>
   );
 }
