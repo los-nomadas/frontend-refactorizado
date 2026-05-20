@@ -16,12 +16,15 @@ vi.mock('../../api/services', () => ({
 }));
 
 import { authService } from '../../api/services';
+import { AuthProvider } from '../../context/AuthContext';
 import LoginPage from './LoginPage';
 
 const renderPage = () =>
   render(
     <MemoryRouter>
-      <LoginPage />
+      <AuthProvider>
+        <LoginPage />
+      </AuthProvider>
     </MemoryRouter>
   );
 
@@ -33,7 +36,16 @@ beforeEach(() => {
 
 describe('LoginPage', () => {
   it('stores the returned token and navigates home on success', async () => {
-    authService.login.mockResolvedValueOnce({ data: { token: 'jwt-token' } });
+    authService.login.mockResolvedValueOnce({
+      data: {
+        token: 'jwt-token',
+        credentialId: 10,
+        username: 'admin',
+        email: 'admin@nomadas.test',
+        role: 'ADMIN',
+        expiresAt: '2026-05-20T12:00:00Z',
+      },
+    });
     renderPage();
 
     await userEvent.type(screen.getByLabelText(/usuario/i), 'admin');
@@ -47,6 +59,13 @@ describe('LoginPage', () => {
       });
     });
     expect(localStorage.getItem('authToken')).toBe('jwt-token');
+    expect(JSON.parse(localStorage.getItem('user'))).toEqual({
+      credentialId: 10,
+      username: 'admin',
+      email: 'admin@nomadas.test',
+      role: 'ADMIN',
+      expiresAt: '2026-05-20T12:00:00Z',
+    });
     expect(navigateMock).toHaveBeenCalledWith('/');
   });
 

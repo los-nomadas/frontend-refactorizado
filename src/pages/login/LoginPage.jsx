@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../../api/services';
 import { Alert } from '../../components/common/Feedback';
 import Button from '../../components/common/Button';
+import { useAuth } from '../../context/AuthContext';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -25,7 +27,7 @@ const LoginPage = () => {
       if (!token) {
         throw new Error('Login response missing token');
       }
-      localStorage.setItem('authToken', token);
+      login(response.data);
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Credenciales inválidas');

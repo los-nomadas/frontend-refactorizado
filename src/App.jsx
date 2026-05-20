@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/home/HomePage';
 import LoginPage from './pages/login/LoginPage';
 import TripsPage from './pages/trips/TripsPage';
@@ -29,18 +30,18 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/trips" element={<TripsPage />} />
             <Route path="/trips/:id" element={<TripDetailPage />} />
-            <Route path="/users" element={<UsersPage />} />
-            <Route path="/users/:id" element={<UserDetailPage />} />
-            <Route path="/hotels" element={<HotelsPage />} />
-            <Route path="/hotels/:id" element={<HotelDetailPage />} />
-            <Route path="/buses" element={<BusesPage />} />
-            <Route path="/buses/:id" element={<BusDetailPage />} />
-            <Route path="/drivers" element={<DriversPage />} />
-            <Route path="/drivers/:id" element={<DriverDetailPage />} />
-            <Route path="/bookings" element={<BookingsPage />} />
+            <Route path="/users" element={<ProtectedRoute><UsersPage /></ProtectedRoute>} />
+            <Route path="/users/:id" element={<ProtectedRoute><UserDetailPage /></ProtectedRoute>} />
+            <Route path="/hotels" element={<ProtectedRoute><HotelsPage /></ProtectedRoute>} />
+            <Route path="/hotels/:id" element={<ProtectedRoute><HotelDetailPage /></ProtectedRoute>} />
+            <Route path="/buses" element={<ProtectedRoute><BusesPage /></ProtectedRoute>} />
+            <Route path="/buses/:id" element={<ProtectedRoute><BusDetailPage /></ProtectedRoute>} />
+            <Route path="/drivers" element={<ProtectedRoute><DriversPage /></ProtectedRoute>} />
+            <Route path="/drivers/:id" element={<ProtectedRoute><DriverDetailPage /></ProtectedRoute>} />
+            <Route path="/bookings" element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />
             <Route path="/my-bookings" element={<MyBookingsPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           </Routes>
         </main>
         <Footer />

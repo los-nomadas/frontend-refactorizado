@@ -12,7 +12,7 @@ const readStoredUser = () => {
 
 export function AuthProvider({ children }) {
   const [authState, setAuthState] = useState(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
 
     if (!token) {
       return {
@@ -37,14 +37,13 @@ export function AuthProvider({ children }) {
 
     const user = {
       credentialId: loginResponse?.credentialId,
-      userId: loginResponse?.userId,
       username: loginResponse?.username,
       email: loginResponse?.email,
       role: loginResponse?.role,
       expiresAt: loginResponse?.expiresAt,
     };
 
-    localStorage.setItem('token', token);
+    localStorage.setItem('authToken', token);
     localStorage.setItem('user', JSON.stringify(user));
 
     setAuthState({
@@ -54,7 +53,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
     localStorage.removeItem('user');
 
     setAuthState({
