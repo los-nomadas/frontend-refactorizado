@@ -4,21 +4,28 @@ import { hotelService } from '../../api/services';
 import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
+import { validateHotelForm } from '../../utils/validation';
+
+const initialHotelForm = {
+  name: '',
+  description: '',
+  location: '',
+  totalRooms: '',
+  availableRooms: '',
+  totalPlaces: '',
+  availablePlaces: '',
+  halfBoardPrice: '',
+  fullBoardPrice: '',
+  imageUrl: '',
+};
 
 const HotelsPage = () => {
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    location: '',
-    totalRooms: '',
-    totalPlaces: '',
-    halfBoardPrice: '',
-    fullBoardPrice: '',
-  });
+  const [formData, setFormData] = useState(initialHotelForm);
 
   const inputClass =
     'w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-100';
@@ -43,22 +50,36 @@ const HotelsPage = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validateHotelForm(formData);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setFormErrors(validationErrors);
+      return;
+    }
+
+    const payload = {
+      name: formData.name,
+      description: formData.description,
+      location: formData.location,
+      totalRooms: Number(formData.totalRooms),
+      availableRooms: Number(formData.availableRooms),
+      totalPlaces: Number(formData.totalPlaces),
+      availablePlaces: Number(formData.availablePlaces),
+      halfBoardPrice: Number(formData.halfBoardPrice),
+      fullBoardPrice: Number(formData.fullBoardPrice),
+      imageUrl: formData.imageUrl,
+    };
+
     try {
-      await hotelService.create(formData);
+      await hotelService.create(payload);
       setIsModalOpen(false);
-      setFormData({
-        name: '',
-        description: '',
-        location: '',
-        totalRooms: '',
-        totalPlaces: '',
-        halfBoardPrice: '',
-        fullBoardPrice: '',
-      });
+      setFormData(initialHotelForm);
+      setFormErrors({});
       loadHotels();
     } catch (err) {
       setError('Error al crear hotel');
@@ -171,67 +192,139 @@ const HotelsPage = () => {
         title="Crear Nuevo Hotel"
       >
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Nombre"
-            value={formData.name}
-            onChange={handleInputChange}
-            className={inputClass}
-            required
-          />
-          <textarea
-            name="description"
-            placeholder="Descripción"
-            value={formData.description}
-            onChange={handleInputChange}
-            className={`${inputClass} min-h-28`}
-          />
-          <input
-            type="text"
-            name="location"
-            placeholder="Ubicación"
-            value={formData.location}
-            onChange={handleInputChange}
-            className={inputClass}
-            required
-          />
-          <input
-            type="number"
-            name="totalRooms"
-            placeholder="Número de Habitaciones"
-            value={formData.totalRooms}
-            onChange={handleInputChange}
-            className={inputClass}
-            required
-          />
-          <input
-            type="number"
-            name="totalPlaces"
-            placeholder="Total de Plazas"
-            value={formData.totalPlaces}
-            onChange={handleInputChange}
-            className={inputClass}
-            required
-          />
-          <input
-            type="number"
-            name="halfBoardPrice"
-            placeholder="Precio Media Pensión"
-            value={formData.halfBoardPrice}
-            onChange={handleInputChange}
-            className={inputClass}
-            required
-          />
-          <input
-            type="number"
-            name="fullBoardPrice"
-            placeholder="Precio Pensión Completa"
-            value={formData.fullBoardPrice}
-            onChange={handleInputChange}
-            className={inputClass}
-            required
-          />
+          <div>
+            <input
+              type="text"
+              name="name"
+              placeholder="Nombre"
+              value={formData.name}
+              onChange={handleInputChange}
+              className={inputClass}
+              required
+            />
+            {formErrors.name && <p className="mt-1 text-sm font-medium text-danger-600">{formErrors.name}</p>}
+          </div>
+          <div>
+            <textarea
+              name="description"
+              placeholder="Descripción"
+              value={formData.description}
+              onChange={handleInputChange}
+              className={`${inputClass} min-h-28`}
+              required
+            />
+            {formErrors.description && (
+              <p className="mt-1 text-sm font-medium text-danger-600">{formErrors.description}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="text"
+              name="location"
+              placeholder="Ubicación"
+              value={formData.location}
+              onChange={handleInputChange}
+              className={inputClass}
+              required
+            />
+            {formErrors.location && <p className="mt-1 text-sm font-medium text-danger-600">{formErrors.location}</p>}
+          </div>
+          <div>
+            <input
+              type="number"
+              name="totalRooms"
+              placeholder="Número de Habitaciones"
+              value={formData.totalRooms}
+              onChange={handleInputChange}
+              className={inputClass}
+              required
+            />
+            {formErrors.totalRooms && (
+              <p className="mt-1 text-sm font-medium text-danger-600">{formErrors.totalRooms}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="number"
+              name="availableRooms"
+              placeholder="Habitaciones Disponibles"
+              value={formData.availableRooms}
+              onChange={handleInputChange}
+              className={inputClass}
+              required
+            />
+            {formErrors.availableRooms && (
+              <p className="mt-1 text-sm font-medium text-danger-600">{formErrors.availableRooms}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="number"
+              name="totalPlaces"
+              placeholder="Total de Plazas"
+              value={formData.totalPlaces}
+              onChange={handleInputChange}
+              className={inputClass}
+              required
+            />
+            {formErrors.totalPlaces && (
+              <p className="mt-1 text-sm font-medium text-danger-600">{formErrors.totalPlaces}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="number"
+              name="availablePlaces"
+              placeholder="Plazas Disponibles"
+              value={formData.availablePlaces}
+              onChange={handleInputChange}
+              className={inputClass}
+              required
+            />
+            {formErrors.availablePlaces && (
+              <p className="mt-1 text-sm font-medium text-danger-600">{formErrors.availablePlaces}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="number"
+              name="halfBoardPrice"
+              placeholder="Precio Media Pensión"
+              value={formData.halfBoardPrice}
+              onChange={handleInputChange}
+              className={inputClass}
+              required
+            />
+            {formErrors.halfBoardPrice && (
+              <p className="mt-1 text-sm font-medium text-danger-600">{formErrors.halfBoardPrice}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="number"
+              name="fullBoardPrice"
+              placeholder="Precio Pensión Completa"
+              value={formData.fullBoardPrice}
+              onChange={handleInputChange}
+              className={inputClass}
+              required
+            />
+            {formErrors.fullBoardPrice && (
+              <p className="mt-1 text-sm font-medium text-danger-600">{formErrors.fullBoardPrice}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="url"
+              name="imageUrl"
+              placeholder="URL de imagen"
+              value={formData.imageUrl}
+              onChange={handleInputChange}
+              className={inputClass}
+              required
+            />
+            {formErrors.imageUrl && <p className="mt-1 text-sm font-medium text-danger-600">{formErrors.imageUrl}</p>}
+          </div>
           <div className="flex flex-col gap-2 pt-4 sm:flex-row">
             <Button type="submit" variant="primary" className="rounded-md">
               Crear

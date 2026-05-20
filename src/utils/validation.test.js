@@ -54,23 +54,63 @@ describe('validateUserForm', () => {
 });
 
 describe('validateHotelForm', () => {
-  it('requires positive totalRooms, totalPlaces and prices', () => {
+  const validHotel = {
+    name: 'Hotel Costa',
+    description: 'Hotel frente al mar',
+    location: 'Málaga',
+    totalRooms: 100,
+    availableRooms: 40,
+    totalPlaces: 200,
+    availablePlaces: 80,
+    halfBoardPrice: 50,
+    fullBoardPrice: 80,
+    imageUrl: 'https://example.com/hotel.jpg',
+  };
+
+  it('returns no errors for a valid hotel', () => {
+    expect(validateHotelForm(validHotel)).toEqual({});
+  });
+
+  it('requires backend contract fields', () => {
     const errors = validateHotelForm({
       name: '',
+      description: '',
       location: '',
       totalRooms: 0,
+      availableRooms: '',
       totalPlaces: 0,
-      halfBoardPrice: 0,
-      fullBoardPrice: 0,
+      availablePlaces: '',
+      halfBoardPrice: '',
+      fullBoardPrice: '',
+      imageUrl: '',
     });
     expect(Object.keys(errors).sort()).toEqual([
+      'availablePlaces',
+      'availableRooms',
+      'description',
       'fullBoardPrice',
       'halfBoardPrice',
+      'imageUrl',
       'location',
       'name',
       'totalPlaces',
       'totalRooms',
     ]);
+  });
+
+  it('rejects availableRooms greater than totalRooms', () => {
+    const errors = validateHotelForm({ ...validHotel, totalRooms: 10, availableRooms: 11 });
+    expect(errors).toHaveProperty('availableRooms');
+  });
+
+  it('rejects availablePlaces greater than totalPlaces', () => {
+    const errors = validateHotelForm({ ...validHotel, totalPlaces: 10, availablePlaces: 11 });
+    expect(errors).toHaveProperty('availablePlaces');
+  });
+
+  it('requires imageUrl because the backend DTO is NotBlank', () => {
+    const errors = validateHotelForm({ ...validHotel, imageUrl: '' });
+    expect(errors).toHaveProperty('imageUrl');
   });
 });
 

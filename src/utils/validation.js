@@ -77,29 +77,79 @@ export const validateUserForm = (formData) => {
 
 export const validateHotelForm = (formData) => {
   const errors = {};
+  const totalRooms = Number(formData.totalRooms);
+  const availableRooms = Number(formData.availableRooms);
+  const totalPlaces = Number(formData.totalPlaces);
+  const availablePlaces = Number(formData.availablePlaces);
+  const halfBoardPrice = Number(formData.halfBoardPrice);
+  const fullBoardPrice = Number(formData.fullBoardPrice);
 
   if (!validateRequiredField(formData.name)) {
     errors.name = 'El nombre del hotel es requerido';
+  }
+
+  if (!validateRequiredField(formData.description)) {
+    errors.description = 'La descripción es requerida';
   }
 
   if (!validateRequiredField(formData.location)) {
     errors.location = 'La ubicación es requerida';
   }
 
-  if (!formData.totalRooms || formData.totalRooms <= 0) {
+  if (!Number.isFinite(totalRooms) || totalRooms <= 0) {
     errors.totalRooms = 'Las habitaciones deben ser mayor a 0';
   }
 
-  if (!formData.totalPlaces || formData.totalPlaces <= 0) {
+  if (
+    formData.availableRooms === '' ||
+    formData.availableRooms === undefined ||
+    !Number.isFinite(availableRooms) ||
+    availableRooms < 0
+  ) {
+    errors.availableRooms = 'Las habitaciones disponibles no pueden ser negativas';
+  }
+
+  if (!errors.totalRooms && !errors.availableRooms && availableRooms > totalRooms) {
+    errors.availableRooms = 'Las habitaciones disponibles no pueden superar las totales';
+  }
+
+  if (!Number.isFinite(totalPlaces) || totalPlaces <= 0) {
     errors.totalPlaces = 'Las plazas deben ser mayor a 0';
   }
 
-  if (!formData.halfBoardPrice || formData.halfBoardPrice <= 0) {
-    errors.halfBoardPrice = 'El precio debe ser mayor a 0';
+  if (
+    formData.availablePlaces === '' ||
+    formData.availablePlaces === undefined ||
+    !Number.isFinite(availablePlaces) ||
+    availablePlaces < 0
+  ) {
+    errors.availablePlaces = 'Las plazas disponibles no pueden ser negativas';
   }
 
-  if (!formData.fullBoardPrice || formData.fullBoardPrice <= 0) {
-    errors.fullBoardPrice = 'El precio debe ser mayor a 0';
+  if (!errors.totalPlaces && !errors.availablePlaces && availablePlaces > totalPlaces) {
+    errors.availablePlaces = 'Las plazas disponibles no pueden superar las totales';
+  }
+
+  if (
+    formData.halfBoardPrice === '' ||
+    formData.halfBoardPrice === undefined ||
+    !Number.isFinite(halfBoardPrice) ||
+    halfBoardPrice < 0
+  ) {
+    errors.halfBoardPrice = 'El precio no puede ser negativo';
+  }
+
+  if (
+    formData.fullBoardPrice === '' ||
+    formData.fullBoardPrice === undefined ||
+    !Number.isFinite(fullBoardPrice) ||
+    fullBoardPrice < 0
+  ) {
+    errors.fullBoardPrice = 'El precio no puede ser negativo';
+  }
+
+  if (!validateRequiredField(formData.imageUrl)) {
+    errors.imageUrl = 'La URL de imagen es requerida';
   }
 
   return errors;
