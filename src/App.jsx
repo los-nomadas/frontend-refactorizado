@@ -39,7 +39,7 @@ function App() {
             <Route path="/drivers" element={<ProtectedRoute><DriversPage /></ProtectedRoute>} />
             <Route path="/drivers/:id" element={<ProtectedRoute><DriverDetailPage /></ProtectedRoute>} />
             <Route path="/bookings" element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />
-            <Route path="/my-bookings" element={<MyBookingsPage />} />
+            <Route path="/my-bookings" element={<ProtectedRoute><MyBookingsPage /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           </Routes>
