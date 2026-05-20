@@ -58,67 +58,31 @@ body {
 
 /* ─── ACCESSIBILITY MODES ─────────────────────────────────────── */
 
-/* Day mode — override dark backgrounds */
-html.a11y-day {
-  color-scheme: light;
-  --a11y-app-bg: #f1f5f9;
-  --a11y-app-color: #0f172a;
-  --a11y-card-bg: #ffffff;
-  --a11y-card-color: #0f172a;
-}
-html.a11y-day body {
-  background-color: #f1f5f9;
-  color: #0f172a;
-}
-/* Override all dark inline backgrounds */
-html.a11y-day [style*="050816"],
-html.a11y-day [style*="#050816"] {
-  background-color: #f1f5f9 !important;
-  color: #0f172a !important;
-}
-html.a11y-day [style*="111827"],
-html.a11y-day [style*="#111827"] {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12) !important;
-}
-html.a11y-day [style*="1f2937"],
-html.a11y-day [style*="#1f2937"] {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
-}
-/* Keep header always dark in day mode */
-html.a11y-day header {
-  background: rgba(15, 23, 42, 0.92) !important;
+/*
+ * Day mode — filter: invert(1) hue-rotate(180deg) is applied to #app-content
+ * via React (App.jsx). That inverts ALL backgrounds/text at once.
+ * Images/videos need a counter-filter so they render normally.
+ */
+html.a11y-day #app-content img,
+html.a11y-day #app-content video,
+html.a11y-day #app-content [data-no-invert] {
+  filter: invert(1) hue-rotate(180deg);
 }
 
-/* High contrast — boost visual weight */
-html.a11y-contrast {
-  --a11y-contrast-filter: contrast(1.4) saturate(1.2);
-}
-html.a11y-contrast body {
-  filter: contrast(1.35) saturate(1.15);
-}
-html.a11y-contrast header {
-  border-bottom-color: rgba(255,255,255,0.3) !important;
-}
-html.a11y-contrast a,
-html.a11y-contrast button {
-  text-decoration-thickness: 2px;
-}
-html.a11y-contrast img {
-  filter: contrast(1.1);
-}
+/*
+ * High contrast — same wrapper receives contrast(1.45) saturate(1.2).
+ * When combined with day mode, both filters are joined in React:
+ * "invert(1) hue-rotate(180deg) contrast(1.45) saturate(1.2)"
+ * Images get the counter-invert only (no extra contrast on them).
+ */
 
-/* Large text */
+/*
+ * Large text — scales root em so rem-based Tailwind elements grow.
+ * zoom scales everything including px inline styles (Chrome/Edge/Safari).
+ */
 html.a11y-large {
   font-size: 118%;
-}
-html.a11y-large h1 { font-size: 2.4rem; }
-html.a11y-large h2 { font-size: 1.8rem; }
-html.a11y-large p, html.a11y-large li, html.a11y-large span, html.a11y-large td {
-  font-size: 1.05em;
-  line-height: 1.7;
+  zoom: 1.08;
 }
 
 /* Panel open animation */

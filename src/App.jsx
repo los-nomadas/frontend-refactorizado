@@ -19,11 +19,26 @@ import BookingsPage from './pages/bookings/BookingsPage';
 import MyBookingsPage from './pages/bookings/MyBookingsPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import ProfilePage from './pages/profile/ProfilePage';
+import { useAccessibility } from './context/AccessibilityContext';
 
-function App() {
+function AppContent() {
+  const { settings } = useAccessibility();
+
+  const filters = [
+    settings.dayMode && 'invert(1) hue-rotate(180deg)',
+    settings.highContrast && 'contrast(1.45) saturate(1.2)',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <BrowserRouter>
-      <div className="flex flex-col min-h-screen">
+    <>
+      {/* Content wrapper — filters applied here so the fixed widget is unaffected */}
+      <div
+        id="app-content"
+        className="flex flex-col min-h-screen"
+        style={filters ? { filter: filters } : undefined}
+      >
         <Header />
         <main className="flex-grow">
           <Routes>
@@ -46,8 +61,18 @@ function App() {
           </Routes>
         </main>
         <Footer />
-        <AccessibilityWidget />
       </div>
+
+      {/* Widget outside the filter wrapper — fixed position stays anchored to viewport */}
+      <AccessibilityWidget />
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
