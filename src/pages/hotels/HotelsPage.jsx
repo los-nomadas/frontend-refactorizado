@@ -20,6 +20,9 @@ const HotelsPage = () => {
     fullBoardPrice: '',
   });
 
+  const inputClass =
+    'w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-100';
+
   const loadHotels = async () => {
     try {
       setLoading(true);
@@ -76,54 +79,91 @@ const HotelsPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Hoteles</h1>
-        <Button onClick={() => setIsModalOpen(true)}>+ Nuevo Hotel</Button>
-      </div>
-
-      {error && (
-        <Alert type="error" message={error} onClose={() => setError(null)} />
-      )}
-
-      {loading ? (
-        <Loading />
-      ) : hotels.length === 0 ? (
-        <EmptyState message="No hay hoteles registrados" />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {hotels.map((hotel) => (
-            <div
-              key={hotel.id}
-              className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition"
-            >
-              <h3 className="text-xl font-bold mb-2">{hotel.name}</h3>
-              <p className="text-gray-600 mb-3">{hotel.description}</p>
-              <div className="space-y-2 text-sm text-gray-600 mb-4">
-                <p><span className="font-semibold">Ubicación:</span> {hotel.location}</p>
-                <p><span className="font-semibold">Habitaciones:</span> {hotel.totalRooms}</p>
-                <p><span className="font-semibold">Plazas:</span> {hotel.totalPlaces}</p>
-                <p><span className="font-semibold">Media Pensión:</span> €{hotel.halfBoardPrice}</p>
-                <p><span className="font-semibold">Pensión Completa:</span> €{hotel.fullBoardPrice}</p>
-              </div>
-              <div className="flex gap-2">
-                <Link
-                  to={`/hotels/${hotel.id}`}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  Ver
-                </Link>
-                <button
-                  onClick={() => handleDelete(hotel.id)}
-                  className="text-red-600 hover:text-red-800"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          ))}
+    <div className="min-h-[calc(100vh-10rem)] bg-primary-50 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8 flex flex-col gap-4 rounded-xl border border-primary-100 bg-white px-6 py-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-primary-700">Gestión</p>
+            <h1 className="mt-1 text-3xl font-bold text-gray-950">Hoteles</h1>
+            <p className="mt-2 text-sm text-gray-600">
+              Gestiona alojamientos, capacidad y tarifas disponibles.
+            </p>
+          </div>
+          <Button onClick={() => setIsModalOpen(true)} className="self-start rounded-md sm:self-center">
+            + Nuevo Hotel
+          </Button>
         </div>
-      )}
+
+        {error && (
+          <div className="mb-6">
+            <Alert type="error" message={error} onClose={() => setError(null)} />
+          </div>
+        )}
+
+        {loading ? (
+          <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
+            <Loading />
+          </div>
+        ) : hotels.length === 0 ? (
+          <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
+            <EmptyState message="No hay hoteles registrados" />
+          </div>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-gray-200 bg-primary-50">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Hotel</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Ubicación</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Habitaciones</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Plazas</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Media Pensión</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Pensión Completa</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {hotels.map((hotel) => (
+                    <tr key={hotel.id} className="transition-colors hover:bg-primary-50">
+                      <td className="min-w-64 px-6 py-4">
+                        <p className="text-sm font-semibold text-gray-950">{hotel.name}</p>
+                        <p className="mt-1 line-clamp-2 text-sm text-gray-500">{hotel.description}</p>
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{hotel.location}</td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{hotel.totalRooms}</td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{hotel.totalPlaces}</td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        €{hotel.halfBoardPrice}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                        €{hotel.fullBoardPrice}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex gap-3 text-sm font-semibold">
+                          <Link
+                            to={`/hotels/${hotel.id}`}
+                            className="text-primary-700 transition-colors hover:text-primary-900"
+                          >
+                            Ver
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(hotel.id)}
+                            className="text-danger-600 transition-colors hover:text-danger-700"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
 
       <Modal
         isOpen={isModalOpen}
@@ -137,7 +177,7 @@ const HotelsPage = () => {
             placeholder="Nombre"
             value={formData.name}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
           <textarea
@@ -145,7 +185,7 @@ const HotelsPage = () => {
             placeholder="Descripción"
             value={formData.description}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={`${inputClass} min-h-28`}
           />
           <input
             type="text"
@@ -153,7 +193,7 @@ const HotelsPage = () => {
             placeholder="Ubicación"
             value={formData.location}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
           <input
@@ -162,7 +202,7 @@ const HotelsPage = () => {
             placeholder="Número de Habitaciones"
             value={formData.totalRooms}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
           <input
@@ -171,7 +211,7 @@ const HotelsPage = () => {
             placeholder="Total de Plazas"
             value={formData.totalPlaces}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
           <input
@@ -180,7 +220,7 @@ const HotelsPage = () => {
             placeholder="Precio Media Pensión"
             value={formData.halfBoardPrice}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
           <input
@@ -189,17 +229,18 @@ const HotelsPage = () => {
             placeholder="Precio Pensión Completa"
             value={formData.fullBoardPrice}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
-          <div className="flex gap-2 pt-4">
-            <Button type="submit" variant="success">
+          <div className="flex flex-col gap-2 pt-4 sm:flex-row">
+            <Button type="submit" variant="primary" className="rounded-md">
               Crear
             </Button>
             <Button
               type="button"
               variant="secondary"
               onClick={() => setIsModalOpen(false)}
+              className="rounded-md"
             >
               Cancelar
             </Button>
