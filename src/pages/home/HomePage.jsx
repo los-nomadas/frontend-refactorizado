@@ -6,15 +6,21 @@ import { tripService } from '../../api/services';
 
 function HomePage() {
   const [featuredTrips, setFeaturedTrips] = useState([]);
+  const [error, setError] = useState(null);
 
   const loadFeaturedTrips = async () => {
     try {
-      const response = await tripService.getAll();
+      setError(null);
+      const response = await tripService.getOffers();
       setFeaturedTrips((response.data || []).slice(0, 3));
     } catch (error) {
+      setError('Error al cargar los viajes');
       console.error(error);
     }
   };
+
+  const getBoardTypeLabel = (boardType) =>
+    boardType === 'FULL_BOARD' ? 'Pensión completa' : 'Media pensión';
 
   useEffect(() => {
     loadFeaturedTrips();
@@ -95,7 +101,20 @@ function HomePage() {
               gap: '25px',
             }}
           >
-            {featuredTrips.length === 0 && (
+            {error && (
+              <div
+                role="alert"
+                style={{
+                  color: '#fca5a5',
+                  fontSize: '20px',
+                  marginTop: '20px',
+                }}
+              >
+                {error}
+              </div>
+            )}
+
+            {!error && featuredTrips.length === 0 && (
               <div
                 style={{
                   color: '#9ca3af',
@@ -141,6 +160,21 @@ function HomePage() {
                   </h3>
 
                   <p>{trip.hotelName}</p>
+
+                  <div
+                    style={{
+                      marginTop: '14px',
+                      color: '#d1d5db',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '6px',
+                    }}
+                  >
+                    <p>Adulto €{trip.priceAdult}</p>
+                    <p>Niño €{trip.priceChild}</p>
+                    <p>Senior €{trip.priceSenior}</p>
+                    <p>{getBoardTypeLabel(trip.boardType)}</p>
+                  </div>
 
                   <div
                     style={{

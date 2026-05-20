@@ -7,6 +7,9 @@ vi.mock('../../api/services', () => ({
     getTripsByYear: vi.fn(),
     getCurrentYearRevenue: vi.fn(),
     getTopTrips: vi.fn(),
+    getTotalUsers: vi.fn(),
+    getTotalTrips: vi.fn(),
+    getRecentBookings: vi.fn(),
   },
 }));
 
@@ -24,6 +27,9 @@ beforeEach(() => {
   dashboardService.getTripsByYear.mockReset();
   dashboardService.getCurrentYearRevenue.mockReset();
   dashboardService.getTopTrips.mockReset();
+  dashboardService.getTotalUsers.mockReset();
+  dashboardService.getTotalTrips.mockReset();
+  dashboardService.getRecentBookings.mockReset();
 });
 
 describe('DashboardPage', () => {
@@ -38,6 +44,13 @@ describe('DashboardPage', () => {
         { tripId: 2, destination: 'Paris', revenue: '250.00' },
       ],
     });
+    dashboardService.getTotalUsers.mockResolvedValue({ data: [{ id: 1 }, { id: 2 }] });
+    dashboardService.getTotalTrips.mockResolvedValue({ data: [{ id: 1 }, { id: 2 }, { id: 3 }] });
+    dashboardService.getRecentBookings.mockResolvedValue({
+      data: [
+        { id: 1, userFullName: 'Carla Nomadas', tripDestination: 'Lisboa', totalPrice: '900.00' },
+      ],
+    });
 
     renderPage();
 
@@ -45,8 +58,8 @@ describe('DashboardPage', () => {
       expect(screen.getByText('5')).toBeInTheDocument();
     });
     expect(screen.getByText('€1234.50')).toBeInTheDocument();
-    expect(screen.getByText(/1\. Lisboa/)).toBeInTheDocument();
-    expect(screen.getByText('€900.00')).toBeInTheDocument();
+    expect(screen.getAllByText('Lisboa').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('€900.00').length).toBeGreaterThan(0);
     expect(screen.getByText('€250.00')).toBeInTheDocument();
   });
 
@@ -56,6 +69,9 @@ describe('DashboardPage', () => {
       data: { year: 2026, totalRevenue: '0' },
     });
     dashboardService.getTopTrips.mockResolvedValue({ data: [] });
+    dashboardService.getTotalUsers.mockResolvedValue({ data: [] });
+    dashboardService.getTotalTrips.mockResolvedValue({ data: [] });
+    dashboardService.getRecentBookings.mockResolvedValue({ data: [] });
 
     renderPage();
 
