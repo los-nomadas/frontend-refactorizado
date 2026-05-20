@@ -193,16 +193,35 @@ function TripDetailPage() {
           alignItems: 'start',
         }}
       >
-        <img
-          src={trip.imageUrl || 'https://picsum.photos/900/600'}
-          alt={trip.destination}
-          style={{
-            width: '100%',
-            minHeight: '320px',
-            objectFit: 'cover',
-            borderRadius: '18px',
-          }}
-        />
+        {trip.imageUrl ? (
+          <img
+            src={trip.imageUrl}
+            alt={trip.destination}
+            style={{
+              width: '100%',
+              minHeight: '320px',
+              objectFit: 'cover',
+              borderRadius: '18px',
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: '100%',
+              minHeight: '320px',
+              borderRadius: '18px',
+              background: 'linear-gradient(135deg, #1e3a5f, #2d6a9f)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <div style={{ textAlign: 'center', color: 'white' }}>
+              <p style={{ fontWeight: '600' }}>Nomadas</p>
+              <p style={{ fontSize: '14px', opacity: 0.7 }}>Imagen no disponible</p>
+            </div>
+          </div>
+        )}
 
         <div
           style={{
@@ -224,6 +243,25 @@ function TripDetailPage() {
           >
             Volver a viajes
           </Link>
+
+          {trip.isOffer && (
+            <span
+              style={{
+                display: 'inline-block',
+                fontSize: '13px',
+                fontWeight: '700',
+                background: 'linear-gradient(135deg, #f97316, #ef4444)',
+                color: 'white',
+                padding: '5px 14px',
+                borderRadius: '20px',
+                letterSpacing: '0.5px',
+                textTransform: 'uppercase',
+                boxShadow: '0 2px 8px rgba(249,115,22,0.4)',
+              }}
+            >
+              Oferta especial
+            </span>
+          )}
 
           <h1
             style={{

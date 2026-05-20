@@ -173,16 +173,25 @@ function TripsPage() {
                       marginBottom: '10px',
                     }}
                   >
-                    <span
-                      style={{
-                        fontSize: '14px',
-                        backgroundColor: '#2563eb',
-                        padding: '6px 12px',
-                        borderRadius: '20px',
-                      }}
-                    >
-                      Oferta
-                    </span>
+                    {trip.isOffer ? (
+                      <span
+                        style={{
+                          fontSize: '13px',
+                          fontWeight: '700',
+                          background: 'linear-gradient(135deg, #f97316, #ef4444)',
+                          color: 'white',
+                          padding: '5px 12px',
+                          borderRadius: '20px',
+                          letterSpacing: '0.5px',
+                          textTransform: 'uppercase',
+                          boxShadow: '0 2px 8px rgba(249,115,22,0.4)',
+                        }}
+                      >
+                        Oferta
+                      </span>
+                    ) : (
+                      <span style={{ visibility: 'hidden', padding: '5px 12px' }}>_</span>
+                    )}
 
                     <button
                       type="button"

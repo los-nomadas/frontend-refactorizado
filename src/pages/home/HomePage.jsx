@@ -159,20 +159,27 @@ function HomePage() {
                       padding="lg"
                       className="flex h-full flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-xl"
                     >
-                      {trip.imageUrl ? (
-                        <img
-                          src={trip.imageUrl}
-                          alt={trip.destination}
-                          className="mb-5 h-56 w-full rounded-lg object-cover"
-                        />
-                      ) : (
-                        <div className="mb-5 flex h-56 items-center justify-center rounded-lg bg-gradient-to-br from-primary-100 to-gray-100">
-                          <div className="text-center">
-                            <p className="text-sm font-semibold text-primary-700">Nomadas</p>
-                            <p className="mt-1 text-xs text-gray-500">Imagen no disponible</p>
+                      <div className="relative mb-5">
+                        {trip.imageUrl ? (
+                          <img
+                            src={trip.imageUrl}
+                            alt={trip.destination}
+                            className="h-56 w-full rounded-lg object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-56 items-center justify-center rounded-lg bg-gradient-to-br from-primary-100 to-gray-100">
+                            <div className="text-center">
+                              <p className="text-sm font-semibold text-primary-700">Nomadas</p>
+                              <p className="mt-1 text-xs text-gray-500">Imagen no disponible</p>
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                        {trip.isOffer && (
+                          <span className="absolute left-3 top-3 rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-lg">
+                            Oferta
+                          </span>
+                        )}
+                      </div>
 
                       <div className="flex flex-1 flex-col">
                         <div className="flex-1">
