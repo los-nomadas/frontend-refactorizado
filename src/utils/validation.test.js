@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   validateBookingForm,
+  validateBusForm,
   validateDNI,
+  validateDriverForm,
   validateEmail,
   validateHotelForm,
   validatePhone,
@@ -52,23 +54,117 @@ describe('validateUserForm', () => {
 });
 
 describe('validateHotelForm', () => {
-  it('requires positive totalRooms, totalPlaces and prices', () => {
+  const validHotel = {
+    name: 'Hotel Costa',
+    description: 'Hotel frente al mar',
+    location: 'Málaga',
+    totalRooms: 100,
+    availableRooms: 40,
+    totalPlaces: 200,
+    availablePlaces: 80,
+    halfBoardPrice: 50,
+    fullBoardPrice: 80,
+    imageUrl: 'https://example.com/hotel.jpg',
+  };
+
+  it('returns no errors for a valid hotel', () => {
+    expect(validateHotelForm(validHotel)).toEqual({});
+  });
+
+  it('requires backend contract fields', () => {
     const errors = validateHotelForm({
       name: '',
+      description: '',
       location: '',
       totalRooms: 0,
+      availableRooms: '',
       totalPlaces: 0,
-      halfBoardPrice: 0,
-      fullBoardPrice: 0,
+      availablePlaces: '',
+      halfBoardPrice: '',
+      fullBoardPrice: '',
+      imageUrl: '',
     });
     expect(Object.keys(errors).sort()).toEqual([
+      'availablePlaces',
+      'availableRooms',
+      'description',
       'fullBoardPrice',
       'halfBoardPrice',
+      'imageUrl',
       'location',
       'name',
       'totalPlaces',
       'totalRooms',
     ]);
+  });
+
+  it('rejects availableRooms greater than totalRooms', () => {
+    const errors = validateHotelForm({ ...validHotel, totalRooms: 10, availableRooms: 11 });
+    expect(errors).toHaveProperty('availableRooms');
+  });
+
+  it('rejects availablePlaces greater than totalPlaces', () => {
+    const errors = validateHotelForm({ ...validHotel, totalPlaces: 10, availablePlaces: 11 });
+    expect(errors).toHaveProperty('availablePlaces');
+  });
+
+  it('requires imageUrl because the backend DTO is NotBlank', () => {
+    const errors = validateHotelForm({ ...validHotel, imageUrl: '' });
+    expect(errors).toHaveProperty('imageUrl');
+  });
+});
+
+describe('validateBusForm', () => {
+  const validBus = {
+    plateNumber: '1234ABC',
+    totalSeats: 50,
+    availableSeats: 40,
+    driverId: 1,
+  };
+
+  it('returns no errors for a valid bus', () => {
+    expect(validateBusForm(validBus)).toEqual({});
+  });
+
+  it('requires positive totalSeats', () => {
+    const errors = validateBusForm({ ...validBus, totalSeats: 0 });
+    expect(errors).toHaveProperty('totalSeats');
+  });
+
+  it('rejects negative availableSeats', () => {
+    const errors = validateBusForm({ ...validBus, availableSeats: -1 });
+    expect(errors).toHaveProperty('availableSeats');
+  });
+
+  it('rejects availableSeats greater than totalSeats', () => {
+    const errors = validateBusForm({ ...validBus, totalSeats: 30, availableSeats: 31 });
+    expect(errors).toHaveProperty('availableSeats');
+  });
+});
+
+describe('validateDriverForm', () => {
+  const validDriver = {
+    firstName: 'Marta',
+    lastName: 'Lopez',
+    dni: '12345678A',
+    licenseNumber: 'LIC-123',
+    phone: '611222333',
+    email: 'marta@nomadas.com',
+    available: true,
+  };
+
+  it('returns no errors for a valid driver', () => {
+    expect(validateDriverForm(validDriver)).toEqual({});
+  });
+
+  it('requires email', () => {
+    const errors = validateDriverForm({ ...validDriver, email: '' });
+    expect(errors).toHaveProperty('email');
+  });
+
+  it('rejects invalid email', () => {
+    const errors = validateDriverForm({ ...validDriver, email: 'bad-email' });
+    expect(errors).toHaveProperty('email');
   });
 });
 

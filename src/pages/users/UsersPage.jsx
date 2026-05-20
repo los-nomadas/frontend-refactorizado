@@ -19,6 +19,9 @@ const UsersPage = () => {
     birthDate: '',
   });
 
+  const inputClass =
+    'w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-100';
+
   const loadUsers = async () => {
     try {
       setLoading(true);
@@ -74,59 +77,82 @@ const UsersPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Usuarios</h1>
-        <Button onClick={() => setIsModalOpen(true)}>+ Nuevo Usuario</Button>
-      </div>
-
-      {error && (
-        <Alert type="error" message={error} onClose={() => setError(null)} />
-      )}
-
-      {loading ? (
-        <Loading />
-      ) : users.length === 0 ? (
-        <EmptyState message="No hay usuarios registrados" />
-      ) : (
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
-          <table className="w-full">
-            <thead className="bg-gray-100 border-b">
-              <tr>
-                <th className="px-6 py-4 text-left font-semibold">Nombre</th>
-                <th className="px-6 py-4 text-left font-semibold">DNI</th>
-                <th className="px-6 py-4 text-left font-semibold">Email</th>
-                <th className="px-6 py-4 text-left font-semibold">Teléfono</th>
-                <th className="px-6 py-4 text-left font-semibold">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.id} className="border-b hover:bg-gray-50">
-                  <td className="px-6 py-4">{`${user.firstName} ${user.lastName}`}</td>
-                  <td className="px-6 py-4">{user.dni}</td>
-                  <td className="px-6 py-4">{user.email}</td>
-                  <td className="px-6 py-4">{user.phone}</td>
-                  <td className="px-6 py-4 flex gap-2">
-                    <Link
-                      to={`/users/${user.id}`}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      Ver
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(user.id)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      Eliminar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="min-h-[calc(100vh-10rem)] bg-primary-50 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8 flex flex-col gap-4 rounded-xl border border-primary-100 bg-white px-6 py-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-primary-700">Gestión</p>
+            <h1 className="mt-1 text-3xl font-bold text-gray-950">Usuarios</h1>
+            <p className="mt-2 text-sm text-gray-600">
+              Administra los usuarios registrados y sus datos de contacto.
+            </p>
+          </div>
+          <Button onClick={() => setIsModalOpen(true)} className="self-start rounded-md sm:self-center">
+            + Nuevo Usuario
+          </Button>
         </div>
-      )}
+
+        {error && (
+          <div className="mb-6">
+            <Alert type="error" message={error} onClose={() => setError(null)} />
+          </div>
+        )}
+
+        {loading ? (
+          <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
+            <Loading />
+          </div>
+        ) : users.length === 0 ? (
+          <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
+            <EmptyState message="No hay usuarios registrados" />
+          </div>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-gray-200 bg-primary-50">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Nombre</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">DNI</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Email</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Teléfono</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {users.map((user) => (
+                    <tr key={user.id} className="transition-colors hover:bg-primary-50">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-950">
+                        {`${user.firstName} ${user.lastName}`}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{user.dni}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{user.email}</td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{user.phone}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex gap-3 text-sm font-semibold">
+                          <Link
+                            to={`/users/${user.id}`}
+                            className="text-primary-700 transition-colors hover:text-primary-900"
+                          >
+                            Ver
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(user.id)}
+                            className="text-danger-600 transition-colors hover:text-danger-700"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
 
       <Modal
         isOpen={isModalOpen}
@@ -140,7 +166,7 @@ const UsersPage = () => {
             placeholder="Nombre"
             value={formData.firstName}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
           <input
@@ -149,7 +175,7 @@ const UsersPage = () => {
             placeholder="Apellidos"
             value={formData.lastName}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
           <input
@@ -158,7 +184,7 @@ const UsersPage = () => {
             placeholder="DNI"
             value={formData.dni}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
           <input
@@ -167,7 +193,7 @@ const UsersPage = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
           <input
@@ -176,24 +202,25 @@ const UsersPage = () => {
             placeholder="Teléfono"
             value={formData.phone}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
           />
           <input
             type="date"
             name="birthDate"
             value={formData.birthDate}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded"
+            className={inputClass}
             required
           />
-          <div className="flex gap-2 pt-4">
-            <Button type="submit" variant="success">
+          <div className="flex flex-col gap-2 pt-4 sm:flex-row">
+            <Button type="submit" variant="primary" className="rounded-md">
               Crear
             </Button>
             <Button
               type="button"
               variant="secondary"
               onClick={() => setIsModalOpen(false)}
+              className="rounded-md"
             >
               Cancelar
             </Button>

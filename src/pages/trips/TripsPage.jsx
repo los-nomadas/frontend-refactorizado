@@ -32,20 +32,6 @@ function TripsPage() {
     );
   };
 
-  const handleDelete = async (tripId) => {
-    if (!window.confirm('¿Eliminar este viaje?')) {
-      return;
-    }
-
-    try {
-      await tripService.delete(tripId);
-      setTrips((currentTrips) => currentTrips.filter((trip) => trip.id !== tripId));
-    } catch (requestError) {
-      console.error(requestError);
-      setError('Error al eliminar el viaje');
-    }
-  };
-
   const filteredTrips = trips.filter((trip) =>
     trip.destination?.toLowerCase().includes(search.toLowerCase())
   );
@@ -155,15 +141,24 @@ function TripsPage() {
                     '0 0 20px rgba(0,0,0,0.4)';
                 }}
               >
-                <img
-                  src={trip.imageUrl || 'https://picsum.photos/600/400'}
-                  alt={trip.destination}
-                  style={{
-                    width: '100%',
-                    height: '220px',
-                    objectFit: 'cover',
-                  }}
-                />
+                {trip.imageUrl ? (
+                  <img
+                    src={trip.imageUrl}
+                    alt={trip.destination}
+                    style={{
+                      width: '100%',
+                      height: '220px',
+                      objectFit: 'cover',
+                    }}
+                  />
+                ) : (
+                  <div className="flex h-[220px] w-full items-center justify-center bg-gradient-to-br from-primary-100 to-gray-100 text-center">
+                    <div>
+                      <p className="text-sm font-semibold text-primary-700">Nomadas</p>
+                      <p className="mt-1 text-xs text-gray-500">Imagen no disponible</p>
+                    </div>
+                  </div>
+                )}
 
                 <div
                   style={{
@@ -249,23 +244,9 @@ function TripsPage() {
                       €{trip.priceAdult}
                     </span>
 
-                    <button
-                      type="button"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        handleDelete(trip.id);
-                      }}
-                      style={{
-                        backgroundColor: '#dc2626',
-                        color: 'white',
-                        border: 'none',
-                        padding: '10px 16px',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Eliminar
-                    </button>
+                    <span className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white">
+                      Ver viaje
+                    </span>
                   </div>
                 </div>
               </div>

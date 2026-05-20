@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../api/services';
 import { Alert } from '../../components/common/Feedback';
 import Button from '../../components/common/Button';
+import { useAuth } from '../../context/AuthContext';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -25,7 +27,7 @@ const LoginPage = () => {
       if (!token) {
         throw new Error('Login response missing token');
       }
-      localStorage.setItem('authToken', token);
+      login(response.data);
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Credenciales inválidas');
@@ -35,54 +37,66 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-md">
-      <h1 className="text-3xl font-bold mb-6 text-center">Acceso operador</h1>
-      <p className="text-sm text-gray-600 text-center mb-6">
-        Inicia sesión para gestionar usuarios, viajes, reservas y el dashboard.
-      </p>
+    <div className="min-h-[calc(100vh-14rem)] bg-primary-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-[32rem] max-w-md items-center">
+        <div className="w-full">
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-bold text-gray-950">Acceso operador</h1>
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              Inicia sesión para gestionar usuarios, viajes, reservas y el dashboard.
+            </p>
+          </div>
 
-      {error && (
-        <Alert type="error" message={error} onClose={() => setError(null)} />
-      )}
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
+            {error && (
+              <div className="mb-5">
+                <Alert type="error" message={error} onClose={() => setError(null)} />
+              </div>
+            )}
 
-      <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6 space-y-4">
-        <div>
-          <label className="block font-semibold mb-1" htmlFor="username">
-            Usuario
-          </label>
-          <input
-            id="username"
-            name="username"
-            type="text"
-            value={credentials.username}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded"
-            autoComplete="username"
-            required
-          />
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800" htmlFor="username">
+                  Usuario
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  value={credentials.username}
+                  onChange={handleChange}
+                  className="w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-100"
+                  autoComplete="username"
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800" htmlFor="password">
+                  Contraseña
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={credentials.password}
+                  onChange={handleChange}
+                  className="w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-100"
+                  autoComplete="current-password"
+                  required
+                />
+              </div>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={submitting}
+                className="w-full rounded-md focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2"
+              >
+                {submitting ? 'Entrando…' : 'Entrar'}
+              </Button>
+            </form>
+          </div>
         </div>
-        <div>
-          <label className="block font-semibold mb-1" htmlFor="password">
-            Contraseña
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            value={credentials.password}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded"
-            autoComplete="current-password"
-            required
-          />
-        </div>
-        <Button type="submit" variant="primary" disabled={submitting} className="w-full">
-          {submitting ? 'Entrando…' : 'Entrar'}
-        </Button>
-        <p className="text-xs text-gray-500 text-center pt-2">
-          Demo: admin / admin12345
-        </p>
-      </form>
+      </div>
     </div>
   );
 };

@@ -9,12 +9,15 @@ vi.mock('../../api/services', () => ({
 }));
 
 import { tripService } from '../../api/services';
+import { AuthProvider } from '../../context/AuthContext';
 import HomePage from './HomePage';
 
 const renderPage = () =>
   render(
     <MemoryRouter>
-      <HomePage />
+      <AuthProvider>
+        <HomePage />
+      </AuthProvider>
     </MemoryRouter>
   );
 
