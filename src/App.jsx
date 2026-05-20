@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import AccessibilityWidget from './components/accessibility/AccessibilityWidget';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/home/HomePage';
 import LoginPage from './pages/login/LoginPage';
@@ -45,6 +46,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <AccessibilityWidget />
       </div>
     </BrowserRouter>
   );

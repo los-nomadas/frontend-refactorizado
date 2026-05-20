@@ -6,13 +6,14 @@ import App from './App';
 import './index.css';
 
 import { AuthProvider } from './context/AuthContext';
+import { AccessibilityProvider } from './context/AccessibilityContext';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-
+    <AccessibilityProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </AccessibilityProvider>
   </React.StrictMode>
 );
