@@ -59,30 +59,39 @@ body {
 /* ─── ACCESSIBILITY MODES ─────────────────────────────────────── */
 
 /*
- * Day mode — filter: invert(1) hue-rotate(180deg) is applied to #app-content
- * via React (App.jsx). That inverts ALL backgrounds/text at once.
- * Images/videos need a counter-filter so they render normally.
+ * Filters are declared here in CSS (not as React inline styles) so the
+ * browser can apply GPU-composited transitions without triggering
+ * React re-renders. The context only toggles html classes; CSS does the rest.
  */
-html.a11y-day #app-content img,
-html.a11y-day #app-content video,
-html.a11y-day #app-content [data-no-invert] {
+
+#app-content {
+  transition: filter 220ms ease;
+}
+
+/* Day mode */
+html.a11y-day #app-content {
   filter: invert(1) hue-rotate(180deg);
 }
 
-/*
- * High contrast — same wrapper receives contrast(1.45) saturate(1.2).
- * When combined with day mode, both filters are joined in React:
- * "invert(1) hue-rotate(180deg) contrast(1.45) saturate(1.2)"
- * Images get the counter-invert only (no extra contrast on them).
- */
+/* Counter-invert images/videos so they display normally */
+html.a11y-day #app-content img,
+html.a11y-day #app-content video {
+  filter: invert(1) hue-rotate(180deg);
+}
 
-/*
- * Large text — scales root em so rem-based Tailwind elements grow.
- * zoom scales everything including px inline styles (Chrome/Edge/Safari).
- */
+/* High contrast */
+html.a11y-contrast #app-content {
+  filter: contrast(1.45) saturate(1.2);
+}
+
+/* Day mode + high contrast combined */
+html.a11y-day.a11y-contrast #app-content {
+  filter: invert(1) hue-rotate(180deg) contrast(1.45) saturate(1.2);
+}
+
+/* Large text — font-size scales rem/Tailwind; no zoom (causes reflow) */
 html.a11y-large {
   font-size: 118%;
-  zoom: 1.08;
 }
 
 /* Panel open animation */
