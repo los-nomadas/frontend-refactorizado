@@ -4,11 +4,13 @@ import { driverService } from '../../api/services';
 import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
+import { validateDriverForm } from '../../utils/validation';
 
 const DriversPage = () => {
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -43,12 +45,29 @@ const DriversPage = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    setFormErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const payload = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      dni: formData.dni,
+      licenseNumber: formData.licenseNumber,
+      phone: formData.phone,
+      email: formData.email,
+      available: formData.available,
+    };
+    const validationErrors = validateDriverForm(payload);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setFormErrors(validationErrors);
+      return;
+    }
+
     try {
-      await driverService.create(formData);
+      await driverService.create(payload);
       setIsModalOpen(false);
       setFormData({
         firstName: '',
@@ -59,6 +78,7 @@ const DriversPage = () => {
         email: '',
         available: true,
       });
+      setFormErrors({});
       loadDrivers();
     } catch (err) {
       setError('Error al crear conductor');
@@ -101,6 +121,7 @@ const DriversPage = () => {
                 <th className="px-6 py-4 text-left font-semibold">Nombre</th>
                 <th className="px-6 py-4 text-left font-semibold">DNI</th>
                 <th className="px-6 py-4 text-left font-semibold">Licencia</th>
+                <th className="px-6 py-4 text-left font-semibold">Email</th>
                 <th className="px-6 py-4 text-left font-semibold">Teléfono</th>
                 <th className="px-6 py-4 text-left font-semibold">Disponible</th>
                 <th className="px-6 py-4 text-left font-semibold">Acciones</th>
@@ -112,6 +133,7 @@ const DriversPage = () => {
                   <td className="px-6 py-4">{`${driver.firstName} ${driver.lastName}`}</td>
                   <td className="px-6 py-4">{driver.dni}</td>
                   <td className="px-6 py-4">{driver.licenseNumber}</td>
+                  <td className="px-6 py-4">{driver.email}</td>
                   <td className="px-6 py-4">{driver.phone}</td>
                   <td className="px-6 py-4">
                     <span
@@ -160,6 +182,7 @@ const DriversPage = () => {
             className="w-full px-4 py-2 border rounded"
             required
           />
+          {formErrors.firstName && <p className="text-sm text-red-600">{formErrors.firstName}</p>}
           <input
             type="text"
             name="lastName"
@@ -169,6 +192,7 @@ const DriversPage = () => {
             className="w-full px-4 py-2 border rounded"
             required
           />
+          {formErrors.lastName && <p className="text-sm text-red-600">{formErrors.lastName}</p>}
           <input
             type="text"
             name="dni"
@@ -178,6 +202,7 @@ const DriversPage = () => {
             className="w-full px-4 py-2 border rounded"
             required
           />
+          {formErrors.dni && <p className="text-sm text-red-600">{formErrors.dni}</p>}
           <input
             type="text"
             name="licenseNumber"
@@ -187,6 +212,7 @@ const DriversPage = () => {
             className="w-full px-4 py-2 border rounded"
             required
           />
+          {formErrors.licenseNumber && <p className="text-sm text-red-600">{formErrors.licenseNumber}</p>}
           <input
             type="tel"
             name="phone"
@@ -195,6 +221,7 @@ const DriversPage = () => {
             onChange={handleInputChange}
             className="w-full px-4 py-2 border rounded"
           />
+          {formErrors.phone && <p className="text-sm text-red-600">{formErrors.phone}</p>}
           <input
             type="email"
             name="email"
@@ -202,7 +229,9 @@ const DriversPage = () => {
             value={formData.email}
             onChange={handleInputChange}
             className="w-full px-4 py-2 border rounded"
+            required
           />
+          {formErrors.email && <p className="text-sm text-red-600">{formErrors.email}</p>}
           <label className="flex items-center">
             <input
               type="checkbox"

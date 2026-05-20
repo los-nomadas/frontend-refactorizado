@@ -107,13 +107,32 @@ export const validateHotelForm = (formData) => {
 
 export const validateBusForm = (formData) => {
   const errors = {};
+  const totalSeats = Number(formData.totalSeats);
+  const availableSeats = Number(formData.availableSeats);
 
   if (!validateRequiredField(formData.plateNumber)) {
     errors.plateNumber = 'La matrícula es requerida';
   }
 
-  if (!formData.capacity || formData.capacity <= 0) {
-    errors.capacity = 'La capacidad debe ser mayor a 0';
+  if (!Number.isFinite(totalSeats) || totalSeats <= 0) {
+    errors.totalSeats = 'Los asientos totales deben ser mayor a 0';
+  }
+
+  if (
+    formData.availableSeats === '' ||
+    formData.availableSeats === undefined ||
+    !Number.isFinite(availableSeats) ||
+    availableSeats < 0
+  ) {
+    errors.availableSeats = 'Los asientos disponibles no pueden ser negativos';
+  }
+
+  if (
+    !errors.totalSeats &&
+    !errors.availableSeats &&
+    availableSeats > totalSeats
+  ) {
+    errors.availableSeats = 'Los asientos disponibles no pueden superar los totales';
   }
 
   return errors;
@@ -136,6 +155,10 @@ export const validateDriverForm = (formData) => {
 
   if (!validateRequiredField(formData.licenseNumber)) {
     errors.licenseNumber = 'El número de licencia es requerido';
+  }
+
+  if (!validateEmail(formData.email)) {
+    errors.email = 'Email inválido';
   }
 
   if (formData.phone && !validatePhone(formData.phone)) {

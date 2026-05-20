@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   validateBookingForm,
+  validateBusForm,
   validateDNI,
+  validateDriverForm,
   validateEmail,
   validateHotelForm,
   validatePhone,
@@ -69,6 +71,60 @@ describe('validateHotelForm', () => {
       'totalPlaces',
       'totalRooms',
     ]);
+  });
+});
+
+describe('validateBusForm', () => {
+  const validBus = {
+    plateNumber: '1234ABC',
+    totalSeats: 50,
+    availableSeats: 40,
+    driverId: 1,
+  };
+
+  it('returns no errors for a valid bus', () => {
+    expect(validateBusForm(validBus)).toEqual({});
+  });
+
+  it('requires positive totalSeats', () => {
+    const errors = validateBusForm({ ...validBus, totalSeats: 0 });
+    expect(errors).toHaveProperty('totalSeats');
+  });
+
+  it('rejects negative availableSeats', () => {
+    const errors = validateBusForm({ ...validBus, availableSeats: -1 });
+    expect(errors).toHaveProperty('availableSeats');
+  });
+
+  it('rejects availableSeats greater than totalSeats', () => {
+    const errors = validateBusForm({ ...validBus, totalSeats: 30, availableSeats: 31 });
+    expect(errors).toHaveProperty('availableSeats');
+  });
+});
+
+describe('validateDriverForm', () => {
+  const validDriver = {
+    firstName: 'Marta',
+    lastName: 'Lopez',
+    dni: '12345678A',
+    licenseNumber: 'LIC-123',
+    phone: '611222333',
+    email: 'marta@nomadas.com',
+    available: true,
+  };
+
+  it('returns no errors for a valid driver', () => {
+    expect(validateDriverForm(validDriver)).toEqual({});
+  });
+
+  it('requires email', () => {
+    const errors = validateDriverForm({ ...validDriver, email: '' });
+    expect(errors).toHaveProperty('email');
+  });
+
+  it('rejects invalid email', () => {
+    const errors = validateDriverForm({ ...validDriver, email: 'bad-email' });
+    expect(errors).toHaveProperty('email');
   });
 });
 

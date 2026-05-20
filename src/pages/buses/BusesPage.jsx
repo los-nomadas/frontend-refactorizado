@@ -4,16 +4,19 @@ import { busService, driverService } from '../../api/services';
 import { Loading, EmptyState, Alert } from '../../components/common/Feedback';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
+import { validateBusForm } from '../../utils/validation';
 
 const BusesPage = () => {
   const [buses, setBuses] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     plateNumber: '',
     totalSeats: '',
+    availableSeats: '',
     driverId: '',
   });
 
@@ -41,14 +44,30 @@ const BusesPage = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validateBusForm(formData);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setFormErrors(validationErrors);
+      return;
+    }
+
+    const payload = {
+      plateNumber: formData.plateNumber,
+      totalSeats: Number(formData.totalSeats),
+      availableSeats: Number(formData.availableSeats),
+      driverId: Number(formData.driverId),
+    };
+
     try {
-      await busService.create(formData);
+      await busService.create(payload);
       setIsModalOpen(false);
-      setFormData({ plateNumber: '', totalSeats: '', driverId: '' });
+      setFormData({ plateNumber: '', totalSeats: '', availableSeats: '', driverId: '' });
+      setFormErrors({});
       loadData();
     } catch (err) {
       setError('Error al crear autobús');
@@ -98,7 +117,7 @@ const BusesPage = () => {
               {buses.map((bus) => (
                 <tr key={bus.id} className="border-b hover:bg-gray-50">
                   <td className="px-6 py-4">{bus.plateNumber}</td>
-                  <td className="px-6 py-4">{bus.totalSeats}</td>
+                  <td className="px-6 py-4">{bus.availableSeats ?? 'N/A'} / {bus.totalSeats}</td>
                   <td className="px-6 py-4">{bus.driverFullName || 'N/A'}</td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
@@ -136,6 +155,7 @@ const BusesPage = () => {
             className="w-full px-4 py-2 border rounded"
             required
           />
+          {formErrors.plateNumber && <p className="text-sm text-red-600">{formErrors.plateNumber}</p>}
           <input
             type="number"
             name="totalSeats"
@@ -145,6 +165,17 @@ const BusesPage = () => {
             className="w-full px-4 py-2 border rounded"
             required
           />
+          {formErrors.totalSeats && <p className="text-sm text-red-600">{formErrors.totalSeats}</p>}
+          <input
+            type="number"
+            name="availableSeats"
+            placeholder="Asientos Disponibles"
+            value={formData.availableSeats}
+            onChange={handleInputChange}
+            className="w-full px-4 py-2 border rounded"
+            required
+          />
+          {formErrors.availableSeats && <p className="text-sm text-red-600">{formErrors.availableSeats}</p>}
           <select
             name="driverId"
             value={formData.driverId}
