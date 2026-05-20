@@ -40,6 +40,7 @@ describe('LoginPage', () => {
       data: {
         token: 'jwt-token',
         credentialId: 10,
+        userId: 5,
         username: 'admin',
         email: 'admin@nomadas.test',
         role: 'ADMIN',
@@ -61,12 +62,36 @@ describe('LoginPage', () => {
     expect(localStorage.getItem('authToken')).toBe('jwt-token');
     expect(JSON.parse(localStorage.getItem('user'))).toEqual({
       credentialId: 10,
+      userId: 5,
       username: 'admin',
       email: 'admin@nomadas.test',
       role: 'ADMIN',
       expiresAt: '2026-05-20T12:00:00Z',
     });
     expect(navigateMock).toHaveBeenCalledWith('/');
+  });
+
+  it('stores userId as null when the credential has no linked customer', async () => {
+    authService.login.mockResolvedValueOnce({
+      data: {
+        token: 'jwt-token',
+        credentialId: 10,
+        username: 'admin',
+        email: 'admin@nomadas.test',
+        role: 'ADMIN',
+        expiresAt: '2026-05-20T12:00:00Z',
+      },
+    });
+    renderPage();
+
+    await userEvent.type(screen.getByLabelText(/usuario/i), 'admin');
+    await userEvent.type(screen.getByLabelText(/contraseña/i), 'admin12345');
+    await userEvent.click(screen.getByRole('button', { name: /entrar/i }));
+
+    await waitFor(() => {
+      expect(localStorage.getItem('user')).not.toBeNull();
+    });
+    expect(JSON.parse(localStorage.getItem('user')).userId).toBeNull();
   });
 
   it('shows the backend error message on 401', async () => {
