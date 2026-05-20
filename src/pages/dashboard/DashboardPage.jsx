@@ -79,23 +79,23 @@ const DashboardPage = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white border-b border-gray-100">
+        <div className="container mx-auto px-4 py-6 md:py-8">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-                Panel Administrativo
+                Dashboard
               </h1>
-              <p className="text-gray-600 mt-2">
-                Bienvenido al dashboard de métricas y análisis
+              <p className="text-gray-500 mt-1 text-sm md:text-base">
+                Gestión de métricas y análisis de agencia
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 md:px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600 text-sm md:text-base"
               >
                 {availableYears.map((year) => (
                   <option key={year} value={year}>
@@ -106,7 +106,7 @@ const DashboardPage = () => {
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-3 md:px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm md:text-base font-medium"
               >
                 {refreshing ? 'Actualizando...' : 'Actualizar'}
               </button>
@@ -122,7 +122,7 @@ const DashboardPage = () => {
       )}
 
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
           <StatCard
             title="Total Usuarios"
             value={dashboard.totalUsers}
@@ -212,19 +212,19 @@ const DashboardPage = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+          <div className="lg:col-span-2 space-y-6 md:space-y-8">
             <OccupancyChart topTrips={dashboard.topTrips} />
             <RecentBookings bookings={dashboard.recentBookings} />
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Resumen Rápido</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                  <span className="text-gray-600">Tasa de Ocupación</span>
-                  <span className="text-lg font-semibold text-green-600">
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Resumen Rápido</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+                  <span className="text-gray-600 text-sm">Tasa de Ocupación</span>
+                  <span className="text-base font-semibold text-success-600">
                     {dashboard.totalTrips > 0
                       ? Math.round(
                           (dashboard.totalBookings / (dashboard.totalTrips * 30)) *
@@ -234,9 +234,9 @@ const DashboardPage = () => {
                     %
                   </span>
                 </div>
-                <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                  <span className="text-gray-600">Promedio por Viaje</span>
-                  <span className="text-lg font-semibold text-blue-600">
+                <div className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+                  <span className="text-gray-600 text-sm">Promedio por Viaje</span>
+                  <span className="text-base font-semibold text-primary-600">
                     €
                     {dashboard.topTrips.length > 0
                       ? formatAmount(
@@ -248,33 +248,33 @@ const DashboardPage = () => {
                       : '0.00'}
                   </span>
                 </div>
-                <div className="flex items-center justify-between py-3">
-                  <span className="text-gray-600">Total Viajes</span>
-                  <span className="text-lg font-semibold text-purple-600">
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-gray-600 text-sm">Total Viajes</span>
+                  <span className="text-base font-semibold text-purple-600">
                     {dashboard.totalTrips}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Acciones Rápidas</h3>
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Acciones Rápidas</h3>
               <div className="space-y-2">
                 <Link
                   to="/trips"
-                  className="block w-full text-center px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium transition-colors"
+                  className="block w-full text-center px-4 py-2.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium transition-colors text-sm"
                 >
                   Ver Todos los Viajes
                 </Link>
                 <Link
                   to="/bookings"
-                  className="block w-full text-center px-4 py-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 font-medium transition-colors"
+                  className="block w-full text-center px-4 py-2.5 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 font-medium transition-colors text-sm"
                 >
                   Ver Todas las Reservas
                 </Link>
                 <Link
                   to="/users"
-                  className="block w-full text-center px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 font-medium transition-colors"
+                  className="block w-full text-center px-4 py-2.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 font-medium transition-colors text-sm"
                 >
                   Ver Todos los Usuarios
                 </Link>

@@ -1,11 +1,11 @@
 const StatCard = ({ title, value, subtitle, icon, color = 'blue' }) => {
   const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600 border-blue-200',
-    green: 'bg-green-50 text-green-600 border-green-200',
-    purple: 'bg-purple-50 text-purple-600 border-purple-200',
-    amber: 'bg-amber-50 text-amber-600 border-amber-200',
-    red: 'bg-red-50 text-red-600 border-red-200',
-    indigo: 'bg-indigo-50 text-indigo-600 border-indigo-200',
+    blue: 'bg-white border-blue-200 text-blue-600',
+    green: 'bg-white border-green-200 text-green-600',
+    purple: 'bg-white border-purple-200 text-purple-600',
+    amber: 'bg-white border-amber-200 text-amber-600',
+    red: 'bg-white border-red-200 text-red-600',
+    indigo: 'bg-white border-indigo-200 text-indigo-600',
   };
 
   const iconBg = {
@@ -19,16 +19,16 @@ const StatCard = ({ title, value, subtitle, icon, color = 'blue' }) => {
 
   return (
     <div
-      className={`rounded-lg border ${colorClasses[color] || colorClasses.blue} p-6 transition-transform hover:scale-105 shadow-sm`}
+      className={`rounded-lg border-2 ${colorClasses[color] || colorClasses.blue} p-5 md:p-6 transition-all duration-200 hover:shadow-md shadow-sm`}
     >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-4xl font-bold mt-2">{value}</p>
-          {subtitle && <p className="text-xs text-gray-500 mt-2">{subtitle}</p>}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-grow">
+          <p className="text-xs md:text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-2xl md:text-3xl font-bold mt-2 text-gray-900">{value}</p>
+          {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
         </div>
         {icon && (
-          <div className={`rounded-lg p-3 ${iconBg[color] || iconBg.blue}`}>
+          <div className={`rounded-lg p-2 md:p-3 flex-shrink-0 ${iconBg[color] || iconBg.blue}`}>
             {icon}
           </div>
         )}
