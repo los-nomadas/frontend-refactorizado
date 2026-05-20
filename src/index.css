@@ -7,8 +7,51 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Color tokens */
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-accent: #f97316;
+  --color-bg: #ffffff;
+  --color-text: #111827;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-border-light: #f3f4f6;
 }
 
 body {
   margin: 0;
+}
+
+/* Table base styles */
+.data-table {
+  @apply w-full border-collapse;
+}
+
+.data-table thead {
+  @apply bg-gray-100 border-b-2 border-gray-200;
+}
+
+.data-table thead th {
+  @apply px-6 py-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap;
+}
+
+.data-table tbody tr {
+  @apply border-b border-gray-200 transition-colors hover:bg-gray-50;
+}
+
+.data-table tbody tr:nth-child(even) {
+  @apply bg-gray-50;
+}
+
+.data-table tbody td {
+  @apply px-6 py-3 text-sm text-gray-700;
+}
+
+.data-table tbody tr:hover {
+  @apply bg-blue-50;
 }

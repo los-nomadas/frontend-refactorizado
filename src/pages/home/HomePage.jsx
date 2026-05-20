@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import MainLayout from '../../components/layout/MainLayout';
+import Card from '../../components/common/Card';
 import { tripService } from '../../api/services';
 
 function HomePage() {
@@ -28,187 +29,91 @@ function HomePage() {
 
   return (
     <MainLayout>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '60px',
-        }}
-      >
-        <section
-          style={{
-            background: 'linear-gradient(135deg, #2563eb, #1e3a8a)',
-            padding: '80px 40px',
-            borderRadius: '24px',
-            textAlign: 'center',
-          }}
-        >
-          <h1
-            style={{
-              fontSize: '64px',
-              marginBottom: '20px',
-            }}
-          >
+      <div className="flex flex-col gap-16">
+        {/* Hero Section */}
+        <section className="bg-gradient-to-br from-primary-600 to-primary-900 rounded-2xl px-10 md:px-16 py-20 md:py-24 text-center text-white">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">
             Descubre el mundo
           </h1>
-
-          <p
-            style={{
-              fontSize: '22px',
-              maxWidth: '700px',
-              margin: '0 auto',
-              color: '#dbeafe',
-            }}
-          >
+          <p className="text-lg md:text-2xl max-w-2xl mx-auto text-blue-100">
             Reserva experiencias únicas, viajes inolvidables y destinos premium
             con Nomadas.
           </p>
         </section>
 
+        {/* Featured Trips Section */}
         <section>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '30px',
-            }}
-          >
-            <h2
-              style={{
-                fontSize: '36px',
-              }}
-            >
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
               Viajes destacados
             </h2>
-
             <Link
               to="/trips"
-              style={{
-                color: '#60a5fa',
-                textDecoration: 'none',
-                fontWeight: 'bold',
-              }}
+              className="text-primary-500 font-semibold hover:text-primary-600 transition-colors"
             >
-              Ver todos
+              Ver todos →
             </Link>
           </div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-              gap: '25px',
-            }}
-          >
-            {error && (
-              <div
-                role="alert"
-                style={{
-                  color: '#fca5a5',
-                  fontSize: '20px',
-                  marginTop: '20px',
-                }}
-              >
-                {error}
-              </div>
-            )}
+          {error && (
+            <div
+              role="alert"
+              className="text-red-400 text-lg mt-5 p-4 bg-red-50 rounded-lg border border-red-200"
+            >
+              {error}
+            </div>
+          )}
 
-            {!error && featuredTrips.length === 0 && (
-              <div
-                style={{
-                  color: '#9ca3af',
-                  fontSize: '20px',
-                  marginTop: '20px',
-                }}
-              >
-                No hay viajes disponibles todavía.
-              </div>
-            )}
+          {!error && featuredTrips.length === 0 && (
+            <div className="text-gray-400 text-lg mt-5 p-4">
+              No hay viajes disponibles todavía.
+            </div>
+          )}
 
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredTrips.map((trip) => (
-              <div
+              <Card
                 key={trip.id}
-                style={{
-                  backgroundColor: '#111827',
-                  borderRadius: '18px',
-                  overflow: 'hidden',
-                }}
+                shadow="lg"
+                padding="lg"
+                className="flex flex-col overflow-hidden hover:shadow-xl transition-shadow"
               >
+                {/* Trip Image */}
                 <img
                   src={trip.imageUrl || 'https://picsum.photos/600/400'}
                   alt={trip.destination}
-                  style={{
-                    width: '100%',
-                    height: '220px',
-                    objectFit: 'cover',
-                  }}
+                  className="w-full h-56 object-cover rounded-lg mb-4"
                 />
 
-                <div
-                  style={{
-                    padding: '20px',
-                  }}
-                >
-                  <h3
-                    style={{
-                      fontSize: '28px',
-                      marginBottom: '10px',
-                    }}
-                  >
+                {/* Trip Details */}
+                <div className="flex-grow">
+                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                     {trip.destination}
                   </h3>
+                  <p className="text-gray-600 font-medium mb-4">{trip.hotelName}</p>
 
-                  <p>{trip.hotelName}</p>
-
-                  <div
-                    style={{
-                      marginTop: '14px',
-                      color: '#d1d5db',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '6px',
-                    }}
-                  >
+                  {/* Pricing Info */}
+                  <div className="space-y-2 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
                     <p>Adulto €{trip.priceAdult}</p>
                     <p>Niño €{trip.priceChild}</p>
                     <p>Senior €{trip.priceSenior}</p>
-                    <p>{getBoardTypeLabel(trip.boardType)}</p>
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: '20px',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: '28px',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      €{trip.priceAdult}
-                    </span>
-
-                    <Link
-                      to={`/trips/${trip.id}`}
-                      style={{
-                        backgroundColor: '#2563eb',
-                        color: 'white',
-                        padding: '10px 18px',
-                        borderRadius: '10px',
-                        textDecoration: 'none',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      Ver viaje
-                    </Link>
+                    <p className="font-medium text-gray-700">{getBoardTypeLabel(trip.boardType)}</p>
                   </div>
                 </div>
-              </div>
+
+                {/* Price + Action */}
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-3xl font-bold text-primary-600">
+                    €{trip.priceAdult}
+                  </span>
+                  <Link
+                    to={`/trips/${trip.id}`}
+                    className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg"
+                  >
+                    Ver viaje
+                  </Link>
+                </div>
+              </Card>
             ))}
           </div>
         </section>
