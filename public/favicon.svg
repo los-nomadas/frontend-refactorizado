@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background: brand blue, rounded for iOS/Android tiles -->
+  <rect width="512" height="512" rx="110" fill="#1d4ed8"/>
+
+  <!-- Exact replica of the app header globe at 512px scale -->
+  <!-- viewBox 0 0 32 32 → scale factor 512/32 = 16 -->
+
+  <!-- Outer circle (r=13.5 × 16 = 216, cx/cy = 16×16 = 256) -->
+  <circle cx="256" cy="256" r="216" stroke="white" stroke-width="22" fill="none"/>
+
+  <!-- Vertical longitude ellipse (rx=6.5×16=104, ry=13.5×16=216) -->
+  <ellipse cx="256" cy="256" rx="104" ry="216" stroke="white" stroke-width="22" fill="none"/>
+
+  <!-- Equator ellipse (rx=13.5×16=216, ry=4.5×16=72) -->
+  <ellipse cx="256" cy="256" rx="216" ry="72" stroke="white" stroke-width="22" fill="none"/>
+
+  <!-- Vertical center line (y1=2.5×16=40, y2=29.5×16=472) -->
+  <line x1="256" y1="40" x2="256" y2="472" stroke="white" stroke-width="22" stroke-linecap="round"/>
+
+  <!-- Cyan north dot (cy=7×16=112, r=1.8×16=29) -->
+  <circle cx="256" cy="112" r="29" fill="#38bdf8"/>
+</svg>

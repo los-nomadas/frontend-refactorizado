@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+:root {
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Color tokens */
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-accent: #f97316;
+  --color-bg: #ffffff;
+  --color-text: #111827;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-border-light: #f3f4f6;
+}
+
+body {
+  margin: 0;
+}
+
+/* Table base styles */
+.data-table {
+  @apply w-full border-collapse;
+}
+
+.data-table thead {
+  @apply bg-gray-100 border-b-2 border-gray-200;
+}
+
+.data-table thead th {
+  @apply px-6 py-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap;
+}
+
+.data-table tbody tr {
+  @apply border-b border-gray-200 transition-colors hover:bg-gray-50;
+}
+
+.data-table tbody tr:nth-child(even) {
+  @apply bg-gray-50;
+}
+
+.data-table tbody td {
+  @apply px-6 py-3 text-sm text-gray-700;
+}
+
+.data-table tbody tr:hover {
+  @apply bg-blue-50;
+}
+
+/* ─── ACCESSIBILITY MODES ─────────────────────────────────────── */
+
+/*
+ * Filters are declared here in CSS (not as React inline styles) so the
+ * browser can apply GPU-composited transitions without triggering
+ * React re-renders. The context only toggles html classes; CSS does the rest.
+ */
+
+#app-content {
+  transition: filter 220ms ease;
+}
+
+/* Day mode */
+html.a11y-day #app-content {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Counter-invert images/videos so they display normally */
+html.a11y-day #app-content img,
+html.a11y-day #app-content video {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* High contrast */
+html.a11y-contrast #app-content {
+  filter: contrast(1.45) saturate(1.2);
+}
+
+/* Day mode + high contrast combined */
+html.a11y-day.a11y-contrast #app-content {
+  filter: invert(1) hue-rotate(180deg) contrast(1.45) saturate(1.2);
+}
+
+/* Large text — font-size scales rem/Tailwind; no zoom (causes reflow) */
+html.a11y-large {
+  font-size: 118%;
+}
+
+/* Panel open animation */
+@keyframes a11y-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

@@ -1,0 +1,92 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+          950: '#0c2d6b',
+        },
+        success: {
+          50: '#f0fdf4',
+          500: '#10b981',
+          600: '#059669',
+          700: '#047857',
+        },
+        danger: {
+          50: '#fef2f2',
+          500: '#ef4444',
+          600: '#dc2626',
+          700: '#b91c1c',
+        },
+        warning: {
+          50: '#fffbeb',
+          500: '#f59e0b',
+          600: '#d97706',
+          700: '#b45309',
+        },
+        accent: {
+          500: '#f97316',
+          600: '#ea580c',
+          700: '#c2410c',
+        },
+      },
+      spacing: {
+        xs: '4px',
+        sm: '8px',
+        md: '12px',
+        lg: '16px',
+        xl: '24px',
+        '2xl': '32px',
+        '3xl': '40px',
+        '4xl': '48px',
+        '5xl': '56px',
+        '6xl': '64px',
+      },
+      fontSize: {
+        xs: ['12px', { lineHeight: '16px', letterSpacing: '0.5px' }],
+        sm: ['14px', { lineHeight: '20px', letterSpacing: '0.25px' }],
+        base: ['16px', { lineHeight: '24px', letterSpacing: '0px' }],
+        lg: ['18px', { lineHeight: '28px', letterSpacing: '0px' }],
+        xl: ['20px', { lineHeight: '28px', letterSpacing: '-0.5px' }],
+        '2xl': ['24px', { lineHeight: '32px', letterSpacing: '-0.5px' }],
+        '3xl': ['30px', { lineHeight: '36px', letterSpacing: '-0.5px' }],
+        '4xl': ['36px', { lineHeight: '40px', letterSpacing: '-1px' }],
+        '5xl': ['48px', { lineHeight: '48px', letterSpacing: '-1px' }],
+        '6xl': ['60px', { lineHeight: '60px', letterSpacing: '-1.5px' }],
+      },
+      boxShadow: {
+        xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        sm: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+      },
+      borderRadius: {
+        xs: '4px',
+        sm: '6px',
+        md: '8px',
+        lg: '12px',
+        xl: '16px',
+        '2xl': '20px',
+      },
+      fontFamily: {
+        sans: ['system-ui', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+}
