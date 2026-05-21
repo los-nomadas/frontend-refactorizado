@@ -1,31 +1,38 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 const AuthContext = createContext(null);
 
-const readStoredUser = () => {
+const clearStorage = () => {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('user');
+};
+
+const readStoredSession = () => {
   try {
-    return JSON.parse(localStorage.getItem('user'));
+    const token = localStorage.getItem('authToken');
+    if (!token) return { token: null, user: null };
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user?.expiresAt && new Date(user.expiresAt) < new Date()) {
+      clearStorage();
+      return { token: null, user: null };
+    }
+
+    return { token, user };
   } catch {
-    return null;
+    clearStorage();
+    return { token: null, user: null };
   }
 };
 
 export function AuthProvider({ children }) {
-  const [authState, setAuthState] = useState(() => {
-    const token = localStorage.getItem('authToken');
+  const [authState, setAuthState] = useState(() => readStoredSession());
 
-    if (!token) {
-      return {
-        token: null,
-        user: null,
-      };
-    }
-
-    return {
-      token,
-      user: readStoredUser(),
-    };
-  });
+  useEffect(() => {
+    const handleExpired = () => setAuthState({ token: null, user: null });
+    window.addEventListener('nomadas:auth:expired', handleExpired);
+    return () => window.removeEventListener('nomadas:auth:expired', handleExpired);
+  }, []);
 
   const login = (loginResponse) => {
     const token =
@@ -54,13 +61,8 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-
-    setAuthState({
-      token: null,
-      user: null,
-    });
+    clearStorage();
+    setAuthState({ token: null, user: null });
   };
 
   const value = useMemo(
